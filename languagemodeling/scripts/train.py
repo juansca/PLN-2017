@@ -15,17 +15,17 @@ import pickle
 from nltk.corpus import gutenberg
 
 from languagemodeling.ngram import NGram
-
+from languagemodeling.corpus_reader import MyCorpus
 
 if __name__ == '__main__':
     opts = docopt(__doc__)
 
     # load the data
-    sents = gutenberg.sents('austen-emma.txt')
+    sents = MyCorpus('big.txt')
 
     # train the model
     n = int(opts['-n'])
-    model = NGram(n, sents)
+    model = NGram(n, sents.sents)
 
     # save it
     filename = opts['-o']

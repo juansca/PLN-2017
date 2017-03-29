@@ -2,53 +2,58 @@ import os
 from nltk.corpus import PlaintextCorpusReader
 from nltk.tokenize import RegexpTokenizer
 
-corpusdir = '../corpus/'
-if not os.path.isdir(corpusdir):
-    os.mkdir(corpusdir)
-
-# Check that our corpus do exist and the files are correct.
-assert os.path.isdir(corpusdir)
-
-# Define a tokenizer pattern that is more precise than the default nltk pattern
-
-pattern = r'''(?ix)          # set flag to allow verbose regexps and ignore case
-      (?:mr\.|mrs\.)         # abreviation for mister and missus
-    | (?:[A-Z]+\'[A-Z]{1,2}) # neg or tobe abreviations, e.g I'm, can't
-    | (?:[A-Z]\.)+           # abbreviations, e.g. U.S.A.
-    | \w+(?:-\w+)*           # words with optional internal hyphens
-    | \$?\d+(?:\.\d+)?%?     # currency and percentages, e.g. $12.40, 82%
-    | \.\.\.                 # ellipsis
-    | [][.,;"'?():-_`]       # these are separate tokens; includes ], [
-'''
 
 
+class MyCorpus(object):
+    """
+    This class represents the corpus tokenizer.
+    The corpus tokenized is in ../corpus/
+    """
 
-# Instanciamos el tokenizer con este pattern
+    def __init__(self, fileId):
+        """
+        :param fileId: file name in ../corpus/ with the text to tokenize
+        :type fileId: string
+        """
+        self.corpusdir = '../corpus/'
+        self.fileId = fileId
+        self.sents = list()
 
-tokenizer = RegexpTokenizer(pattern)
+        if not os.path.isdir(self.corpusdir):
+            os.mkdir(self.corpusdir)
 
-# Create a new corpus by specifying the parameters
-# (1) directory of the new corpus
-# (2) the fileids of the corpus
-# The fileids are simply the filenames.
+        # Check that our corpus do exist and the files are correct.
+        assert os.path.isdir(self.corpusdir)
+        self._sents()
 
-my_corpus = PlaintextCorpusReader('../corpus/',
-                                  'big.txt',
-                                  word_tokenizer=tokenizer)
+    def _sents(self):
+        """
+        This method tokenize the corpus with the tokenizer pattern defined.
+        """
+        # Define a tokenizer pattern that is more precise than the default nltk
+        # pattern
 
-# Access sentences in the corpus. (list of list of strings)
-sent_list = my_corpus.sents()
-for i in range(1, 600):
-    print(sent_list[i])
+        pattern = r'''(?ix) # set flag to allow verbose regexps and ignore case
+              (?:mr\.|mrs\.)        # abreviation for mister and missus
+            | (?:[A-Z]+\'[A-Z]{1,2}) # neg or to be abreviations, e.g I'm, can't
+            | (?:[A-Z]\.)+          # abbreviations, e.g. U.S.A.
+            | \w+(?:-\w+)*          # words with optional internal hyphens
+            | \$?\d+(?:\.\d+)?%?    # currency and percentages, e.g. $12.40, 82%
+            | \.\.\.                # ellipsis
+            | [][.,;"'?():-_`]      # these are separate tokens; includes ], [
+        '''
 
+        # Instantiate the tokenizer
+        tokenizer = RegexpTokenizer(pattern)
 
+        # Create a new corpus by specifying the parameters
+        # (1) directory of the new corpus
+        # (2) the fileids of the corpus
+        # The fileids are simply the filenames.
 
-pattern = r'''(?ix)       # set flag to allow verbose regexps and ignore case
-      (?:mr\.|mrs\.)      # abreviation for mister and missus
-    | (?:[A-Z]+\'[A-Z]{1,2})
-    | (?:[A-Z]\.)+        # abbreviations, e.g. U.S.A.
-    | \w+(?:-\w+)*        # words with optional internal hyphens
-    | \$?\d+(?:\.\d+)?%?  # currency and percentages, e.g. $12.40, 82%
-    | \.\.\.              # ellipsis
-    | [][.,;"'?():-_`]    # these are separate tokens; includes ], [
-'''
+        my_corpus = PlaintextCorpusReader('../corpus/',
+                                          self.fileId,
+                                          word_tokenizer=tokenizer)
+
+        # Access sentences in the corpus (list of list of strings)
+        self.sents = my_corpus.sents()

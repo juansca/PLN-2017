@@ -1,6 +1,6 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
-
+from math import log
 
 class NGram(object):
 
@@ -11,23 +11,21 @@ class NGram(object):
         """
         assert n > 0
         self.n = n
-        self.counts = counts = defaultdict(int)
+        counts = defaultdict(int)
+        self.counts = counts
 
         for sent in sents:
+            # In the unigram, don't consider the open tag
+            if n > 1:
+                sent.insert(0, '<s>')
+            sent.append('</s>')
+            # Complete the sentence to be in the nth range
+            for i in range(len(sent), n):
+                sent.insert(0, '<s>')
             for i in range(len(sent) - n + 1):
                 ngram = tuple(sent[i: i + n])
                 counts[ngram] += 1
                 counts[ngram[:-1]] += 1
-
-    def prob(self, token, prev_tokens=None):
-        n = self.n
-        if not prev_tokens:
-            prev_tokens = []
-        assert len(prev_tokens) == n - 1
-
-        tokens = prev_tokens + [token]
-        return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
-
 
     def count(self, tokens):
         """
@@ -35,6 +33,7 @@ class NGram(object):
 
         :param tokens: the n-gram or (n-1)-gram tuple.
         """
+        return self.counts[tokens]
 
     def cond_prob(self, token, prev_tokens=None):
         """
@@ -42,13 +41,23 @@ class NGram(object):
 
         :param token: the token.
         :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
+        :type token: token
+        :type prev_tokens: list(token)
         """
+        n = self.n
+        if not prev_tokens:
+            prev_tokens = []
+
+        assert(len(prev_tokens) == n - 1)
+        tokens = prev_tokens + [token]
+        return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
 
     def sent_prob(self, sent):
         """
         Probability of a sentence. Warning: subject to underflow problems.
 
-        :param sent: the sentence as a list of tokens.
+        :param sent: the sentence whose Probability is going to be calculated
+        :type sent: list(tokens)
         """
 
     def sent_log_prob(self, sent):

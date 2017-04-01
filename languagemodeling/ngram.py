@@ -59,6 +59,20 @@ class NGram(object):
         :param sent: the sentence whose Probability is going to be calculated
         :type sent: list(tokens)
         """
+        prob = self.cond_prob(sent[0])
+
+        if self.n > 1:
+            for i in range(len(sent) - 1):
+                if prob == 0:
+                    break
+                prob = prob * self.cond_prob(sent[i + 1], sent[:i + 1])
+        else:
+            for i in range(len(sent) - 1):
+                if prob == 0:
+                    break
+                prob = prob * self.cond_prob(sent[i + 1])
+
+        return prob
 
     def sent_log_prob(self, sent):
         """

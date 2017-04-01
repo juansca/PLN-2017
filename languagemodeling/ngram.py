@@ -80,3 +80,17 @@ class NGram(object):
 
         :param sent: the sentence as a list of tokens.
         """
+        log1 = lambda x: log(x) if x > 0  else float('-inf')
+        prob = log1(self.cond_prob(sent[0]))
+
+        if self.n > 1:
+            for i in range(len(sent) - 1):
+                if prob == float('-inf'):
+                    break
+                prob = prob + log1(self.cond_prob(sent[i + 1], sent[:i + 1]))
+        else:
+            for i in range(len(sent) - 1):
+                if prob == float('-inf'):
+                    break
+                prob = prob + log1(self.cond_prob(sent[i + 1]))
+        return prob

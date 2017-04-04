@@ -59,13 +59,25 @@ class NGram(object):
         :param sent: the sentence whose Probability is going to be calculated
         :type sent: list(tokens)
         """
-        prob = self.cond_prob(sent[0])
 
-        if self.n > 1:
-            for i in range(len(sent) - 1):
+        n = self.n
+        # Adding corresponding start and end tags to the sentence
+        #(preprocessing the sent)
+        if n > 1:
+            sent.insert(0, '<s>')
+        sent.append('</s>')
+        # Complete the sentence to be in the nth range
+        for i in range(len(sent), n):
+            sent.insert(0, '<s>')
+
+        # Compute the sentence probability
+        prob = self.cond_prob(sent[0])
+        if n > 1:
+            for i in range(len(sent) - n):
                 if prob == 0:
                     break
-                prob = prob * self.cond_prob(sent[i + 1], sent[:i + 1])
+                tok = i * n % len(sent)
+                prob = prob * self.cond_prob(sent[i], sent[:i])
         else:
             for i in range(len(sent) - 1):
                 if prob == 0:
@@ -80,10 +92,22 @@ class NGram(object):
 
         :param sent: the sentence as a list of tokens.
         """
-        log1 = lambda x: log(x) if x > 0  else float('-inf')
+        n = self.n
+        log1 = lambda x: log(x, 2) if x > 0  else float('-inf')
+
+        # Adding corresponding start and end tags to the sentence
+        #(preprocessing the sent)
+        if n > 1:
+            sent.insert(0, '<s>')
+        sent.append('</s>')
+        # Complete the sentence to be in the nth range
+        for i in range(len(sent), n):
+            sent.insert(0, '<s>')
+
+        # Compute the sentence probability
         prob = log1(self.cond_prob(sent[0]))
 
-        if self.n > 1:
+        if n > 1:
             for i in range(len(sent) - 1):
                 if prob == float('-inf'):
                     break

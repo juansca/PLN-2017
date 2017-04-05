@@ -120,3 +120,19 @@ class NGram(object):
                     break
                 prob = prob + log1(self.cond_prob(sent[i]))
         return prob
+        
+class NGramGenerator:
+
+    def __init__(self, model):
+        """
+        model -- n-gram model.
+        """
+
+    def generate_sent(self):
+        """Randomly generate a sentence."""
+
+    def generate_token(self, prev_tokens=None):
+        """Randomly generate a token, given prev_tokens.
+
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """

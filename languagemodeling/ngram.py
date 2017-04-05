@@ -13,15 +13,13 @@ class NGram(object):
         self.n = n
         counts = defaultdict(int)
         self.counts = counts
+        # Adding corresponding start and end tags to the sentence
+        #(preprocessing the sent)
+        sent = self._add_tags(sent)
 
         for sent in sents:
             # In the unigram, don't consider the open tag
-            if n > 1:
-                sent.insert(0, '<s>')
-            sent.append('</s>')
-            # Complete the sentence to be in the nth range
-            for i in range(len(sent), n):
-                sent.insert(0, '<s>')
+
             for i in range(len(sent) - n + 1):
                 ngram = tuple(sent[i: i + n])
                 counts[ngram] += 1
@@ -110,7 +108,7 @@ class NGram(object):
         # Adding corresponding start and end tags to the sentence
         #(preprocessing the sent)
         sent = self._add_tags(sent)
-        
+
         # Compute the sentence probability
         prob = log1(self.cond_prob(sent[0]))
 

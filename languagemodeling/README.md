@@ -31,3 +31,26 @@ Luego, se definió un patrón de tokenización como sigue:
 
 Para tokenizar, no separamos las palabras como **I'm**. Las tomamos como una
 palabra. Eventualmente, este tema será solucionado en la parte de parseo.
+
+## Ejercicio 2
+
+
+Se utilizó una función auxiliar **_add_tags** para agregar los tags de inicio y
+fin. Dependiendo de si es un unigrama o no, se agrega el de inicio. Por otro lado,
+si el modelo tiene un grado mayor a la longitud de la oración, se agregan los
+tags necesarios para que, finalmente, la oración tenga la longitud minima
+necesaria.
+
+### **count**
+Este método simplemente devuelve el valor del **self.counts**
+para el correspondiente tokens (tupla de tokens).
+
+### **cond_prob**
+Este método fué implementada por la cátedra. No se le realizó
+ningún cambio.
+
+### **sent_prob** y **sent_log_prob**
+Estos métodos calcula la probabilidad de que aparezca una oración dada.
+Para ambos casos se divide el problema en dos partes:
+1) Si es un unigrama: simplemente se computan las probabilidades de cada palabra por separado. Estos valores se van acumulando en **prob**.
+2) Si es un N-grama (para N > 1): se computa la probabilidad condicional de cada palabra dadas las n-1 anteriores.

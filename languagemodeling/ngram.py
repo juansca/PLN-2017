@@ -35,6 +35,22 @@ class NGram(object):
         """
         return self.counts[tokens]
 
+    def _add_tags(self, sent):
+        """
+        This method adds the start and anding tags correspondly
+        :param sent: sentence to be processed
+        :type sent: list of tokens
+        """
+        n = self.n
+        if n > 1:
+            sent.insert(0, '<s>')
+        sent.append('</s>')
+        # Complete the sentence to be in the nth range
+        for i in range(len(sent), n):
+            sent.insert(0, '<s>')
+
+        return sent
+
     def cond_prob(self, token, prev_tokens=None):
         """
         Conditional probability of a token.
@@ -57,18 +73,12 @@ class NGram(object):
         Probability of a sentence. Warning: subject to underflow problems.
 
         :param sent: the sentence whose Probability is going to be calculated
-        :type sent: list(tokens)
+        :type sent: list of tokens
         """
-
         n = self.n
         # Adding corresponding start and end tags to the sentence
         #(preprocessing the sent)
-        if n > 1:
-            sent.insert(0, '<s>')
-        sent.append('</s>')
-        # Complete the sentence to be in the nth range
-        for i in range(len(sent), n):
-            sent.insert(0, '<s>')
+        sent = self._add_tags(sent)
 
         # Compute the sentence probability
         prob = self.cond_prob(sent[0])
@@ -90,20 +100,17 @@ class NGram(object):
         """
         Log-probability of a sentence.
 
-        :param sent: the sentence as a list of tokens.
+        :param sent: the sentence to calculate the log
+                    probability.
+        :type sent: list of tokens
         """
         n = self.n
         log1 = lambda x: log(x, 2) if x > 0  else float('-inf')
 
         # Adding corresponding start and end tags to the sentence
         #(preprocessing the sent)
-        if n > 1:
-            sent.insert(0, '<s>')
-        sent.append('</s>')
-        # Complete the sentence to be in the nth range
-        for i in range(len(sent), n):
-            sent.insert(0, '<s>')
-
+        sent = self._add_tags(sent)
+        
         # Compute the sentence probability
         prob = log1(self.cond_prob(sent[0]))
 

@@ -70,27 +70,26 @@ class NGram(object):
         """
         Probability of a sentence. Warning: subject to underflow problems.
 
-        :param sent: the sentence whose Probability is going to be calculated
+        :param sent: the sentence whose Probability is going to be
+                     calculated
         :type sent: list of tokens
         """
         n = self.n
         # Adding corresponding start and end tags to the sentence
         #(preprocessing the sent)
         sent = self._add_tags(sent)
-
+        prob = 1
         # Compute the sentence probability
-        prob = self.cond_prob(sent[0])
         if n > 1:
-            for i in range(len(sent) - n):
+            for i in range(n, len(sent)):
                 if prob == 0:
                     break
-                tok = i * n % len(sent)
-                prob = prob * self.cond_prob(sent[i], sent[:i])
+                prob = prob * self.cond_prob(sent[i - 1], sent[i - n: i - 1])
         else:
-            for i in range(len(sent) - 1):
+            for i in range(len(sent)):
                 if prob == 0:
                     break
-                prob = prob * self.cond_prob(sent[i + 1])
+                prob = prob * self.cond_prob(sent[i])
 
         return prob
 
@@ -98,8 +97,7 @@ class NGram(object):
         """
         Log-probability of a sentence.
 
-        :param sent: the sentence to calculate the log
-                    probability.
+        :param sent: the sentence to calculate the log probability.
         :type sent: list of tokens
         """
         n = self.n
@@ -108,18 +106,17 @@ class NGram(object):
         # Adding corresponding start and end tags to the sentence
         #(preprocessing the sent)
         sent = self._add_tags(sent)
+        prob = log1(1)
 
         # Compute the sentence probability
-        prob = log1(self.cond_prob(sent[0]))
-
         if n > 1:
-            for i in range(len(sent) - 1):
+            for i in range(n, len(sent)):
                 if prob == float('-inf'):
                     break
-                prob = prob + log1(self.cond_prob(sent[i + 1], sent[:i + 1]))
+                prob = prob + log1(self.cond_prob(sent[i - 1], sent[i - n: i - 1]))
         else:
-            for i in range(len(sent) - 1):
+            for i in range(len(sent)):
                 if prob == float('-inf'):
                     break
-                prob = prob + log1(self.cond_prob(sent[i + 1]))
+                prob = prob + log1(self.cond_prob(sent[i]))
         return prob

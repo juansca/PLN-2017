@@ -13,12 +13,11 @@ class NGram(object):
         self.n = n
         counts = defaultdict(int)
         self.counts = counts
-        # Adding corresponding start and end tags to the sentence
-        #(preprocessing the sent)
-        sent = self._add_tags(sent)
 
         for sent in sents:
-            # In the unigram, don't consider the open tag
+            # Adding corresponding start and end tags to the sentence
+            #(preprocessing the sent)
+            sent = self._add_tags(sent)
 
             for i in range(len(sent) - n + 1):
                 ngram = tuple(sent[i: i + n])
@@ -41,6 +40,7 @@ class NGram(object):
         """
         n = self.n
         if n > 1:
+            # In the unigram, don't consider the open tag
             sent.insert(0, '<s>')
         sent.append('</s>')
         # Complete the sentence to be in the nth range

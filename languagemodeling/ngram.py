@@ -13,7 +13,6 @@ class NGram(object):
         self.n = n
         counts = defaultdict(int)
         self.counts = counts
-
         for sent in sents:
             # Adding corresponding start and end tags to the sentence
             #(preprocessing the sent)
@@ -41,7 +40,8 @@ class NGram(object):
         n = self.n
         if n > 1:
             # In the unigram, don't consider the open tag
-            sent.insert(0, '<s>')
+            for i in range(n - 1):
+                sent.insert(0, '<s>')
         sent.append('</s>')
         # Complete the sentence to be in the nth range
         for i in range(len(sent), n):
@@ -120,19 +120,46 @@ class NGram(object):
                     break
                 prob = prob + log1(self.cond_prob(sent[i]))
         return prob
-        
+
 class NGramGenerator:
 
     def __init__(self, model):
         """
-        model -- n-gram model.
+        :param model: n-gram model.
+        :type model: Ngram
         """
+        n = model.n
+        probs = dict()
+        self.probs = probs
+
+
+        probs_list = list()
+
+        # Genero una lista de tokens de longitud n, cada uno.
+        tok_list = [x for x in list(model.counts.keys()) if len(x) == n]
+
+        for token in tok_list:
+            probs[token] = list()
+        for token in tok_list:
+            print(token)
+            tok_prob = tuple()
+            tok = token[n - 1:]
+            prev_tok = token[:n - 1]
+
+            cond_tok = model.cond_prob(tok, list(prev_tok))
+            tok_prob = (tok, cond_tok)
+
+            probs[token].append(tok_prob)
+
+        for key in list(probs.keys()):
+            probs[key] = dict(probs[key])
 
     def generate_sent(self):
         """Randomly generate a sentence."""
 
     def generate_token(self, prev_tokens=None):
-        """Randomly generate a token, given prev_tokens.
+        """
+        Randomly generate a token, given prev_tokens.
 
-        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        :param: prev_tokens: the previous n-1 tokens (optional only if n = 1).
         """

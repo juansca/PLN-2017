@@ -38,15 +38,10 @@ class NGram(object):
         :type sent: list of tokens
         """
         n = self.n
-        if n > 1:
-            # In the unigram, don't consider the open tag
-            for i in range(n - 1):
-                sent.insert(0, '<s>')
+        for i in range(n - 1):
+            sent.insert(0, '<s>')
         sent.append('</s>')
         # Complete the sentence to be in the nth range
-        for i in range(len(sent), n):
-            sent.insert(0, '<s>')
-
         return sent
 
     def cond_prob(self, token, prev_tokens=None):

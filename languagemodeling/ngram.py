@@ -155,6 +155,14 @@ class NGramGenerator:
                                             key=lambda x: (-x[1], x[0]))
 
 
+    def _choice(self, choices):
+        total = sum(w for c, w in choices)
+        r = uniform(0, total)
+        upto = 0
+        for c, w in choices:
+            if upto + w >= r:
+                return c
+            upto += w
 
 
 
@@ -171,3 +179,4 @@ class NGramGenerator:
         :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
         :type prev_tokens: tuple
         """
+        return self._choice(self.sorted_probs[prev_tokens])

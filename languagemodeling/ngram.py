@@ -127,30 +127,37 @@ class NGramGenerator:
         probs = dict()
         self.probs = probs
 
-
         probs_list = list()
 
         # Genero una lista de tokens de longitud n, cada uno.
         tok_list = [x for x in list(model.counts.keys()) if len(x) == n]
+        for token in tok_list:
+            probs[token[:n - 1]] = list()
 
         for token in tok_list:
-            probs[token] = list()
-        for token in tok_list:
-            print(token)
             tok_prob = tuple()
             tok = token[n - 1:]
             prev_tok = token[:n - 1]
 
-            cond_tok = model.cond_prob(tok, list(prev_tok))
-            tok_prob = (tok, cond_tok)
+            cond_tok = model.cond_prob(tok[0], list(prev_tok))
+            print(prev_tok, tok, cond_tok)
+            tok_prob = (tok[0], cond_tok)
 
-            probs[token].append(tok_prob)
+            probs[prev_tok].append(tok_prob)
 
-        for key in list(probs.keys()):
+
+        self.sorted_probs = dict(probs)
+        for key in probs.keys():
             probs[key] = dict(probs[key])
+
+        for key in self.sorted_probs.keys():
+            sorted(self.sorted_probs[key], key=lambda x: x[1], reverse=True)
 
     def generate_sent(self):
         """Randomly generate a sentence."""
+
+
+
 
     def generate_token(self, prev_tokens=None):
         """

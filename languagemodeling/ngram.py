@@ -124,38 +124,57 @@ class NGramGenerator:
         :param model: n-gram model.
         :type model: Ngram
         """
-        n = model.n
+        self.n = model.n
+        n = self.n
         probs = dict()
         self.probs = probs
 
         probs_list = list()
 
-        # Genero una lista de tokens de longitud n, cada uno.
+        # Generate a list of tuples (keys of model.counts) of length n.
+        # We obtain these tuples to conservate the relationship between
+        # prev_tokens and tokens
         tok_list = [x for x in list(model.counts.keys()) if len(x) == n]
+
         for token in tok_list:
             probs[token[:n - 1]] = list()
 
         for token in tok_list:
             tok_prob = tuple()
+            # The token that is related to prev_tokens
             tok = token[n - 1:]
+            # The prev_tokens related to token
             prev_tok = token[:n - 1]
 
             cond_tok = model.cond_prob(tok[0], list(prev_tok))
+            # First, we save the tuple. Later, we will convert that to a dict.
+            # This method facilitates the calculation of self.sorted_probs and the
+            # structure of self.probs
             tok_prob = (tok[0], cond_tok)
-
             probs[prev_tok].append(tok_prob)
-
 
         self.sorted_probs = dict(probs)
         for key in probs.keys():
             probs[key] = dict(probs[key])
 
+        # Sorting the lists in self.sorted_probs.
+        # The order is defined by: most probably element (second component of the
+        # tuple) and, after that, strings (or tokens) in the first element of the
+        # tuple orderer (< to >)
         for key in self.sorted_probs.keys():
             self.sorted_probs[key] = sorted(self.sorted_probs[key],
                                             key=lambda x: (-x[1], x[0]))
 
 
     def _choice(self, choices):
+        """
+        This method is a weighted version of random.choice.
+        Choice an element from a list of elements asociated with weights; in
+        this particular case are probabilities.
+
+        :param choices: Is the list of elements that will be chosen
+        :param choices: List of tuples of elements and weights (probabilities)
+        """
         total = sum(w for c, w in choices)
         r = uniform(0, total)
         upto = 0
@@ -164,11 +183,41 @@ class NGramGenerator:
                 return c
             upto += w
 
+    def last_n(self, xs, n):
+        """
+        Returns the last n elements of the list xs.
+
+        :param xs: List whose last n elements will be returned
+        :param n: The number of elements that it will return
+        :type xs: List
+        :type n: int
+        """
+        assert(n <= len(xs))
+        if n == 0:
+            return []
+        else:
+            return xs[-n:]
 
 
     def generate_sent(self):
         """Randomly generate a sentence."""
 
+        n = self.n
+        # Adding the n - 1 start tags to compute correctly the probabilities
+        sentence = ['<s>'] * (n - 1)
+        prev_tokens = self.last_n(sentence, n - 1)
+        # If '</s>' appears in our sentence, the sentence is finished
+        while '</s>' not in sentence:
+            generated_tok = self.generate_token(tuple(prev_tokens))
+            sentence.append(generated_tok)
+            prev_tokens = self.last_n(sentence, n - 1)
+
+        # Rebuiling the sentence. We don't want the tags
+        result = []
+        for tok in sentence:
+            if tok != '</s>' and tok != '<s>':
+                result.append(tok)
+        return result
 
 
 
@@ -179,4 +228,5 @@ class NGramGenerator:
         :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
         :type prev_tokens: tuple
         """
+
         return self._choice(self.sorted_probs[prev_tokens])

@@ -1,6 +1,7 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
 from math import log
+from random import uniform
 
 class NGram(object):
 
@@ -140,7 +141,6 @@ class NGramGenerator:
             prev_tok = token[:n - 1]
 
             cond_tok = model.cond_prob(tok[0], list(prev_tok))
-            print(prev_tok, tok, cond_tok)
             tok_prob = (tok[0], cond_tok)
 
             probs[prev_tok].append(tok_prob)
@@ -151,7 +151,12 @@ class NGramGenerator:
             probs[key] = dict(probs[key])
 
         for key in self.sorted_probs.keys():
-            sorted(self.sorted_probs[key], key=lambda x: x[1], reverse=True)
+            self.sorted_probs[key] = sorted(self.sorted_probs[key],
+                                            key=lambda x: (-x[1], x[0]))
+
+
+
+
 
     def generate_sent(self):
         """Randomly generate a sentence."""
@@ -163,5 +168,6 @@ class NGramGenerator:
         """
         Randomly generate a token, given prev_tokens.
 
-        :param: prev_tokens: the previous n-1 tokens (optional only if n = 1).
+        :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
+        :type prev_tokens: tuple
         """

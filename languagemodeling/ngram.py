@@ -140,6 +140,10 @@ class NGram(object):
         :param sents: the sentences whose log probability will be calculated.
         :type sents: List of lists of tokens.
         """
+        for sent in sents:
+            prob += self.sent_log_prob(sent)
+
+        return prob
 
     def cross_entropy(self, sents):
         """
@@ -147,12 +151,24 @@ class NGram(object):
         :param sents: sentences whose cross entropy will be calculated
         :type sents: List of lists of tokens
         """
+        # Is the total number of words in sents
+        totalwords = 0
+        for sent in sents:
+            totalwords += len(sent)
+
+        entropy = - self.log_prob(sents) / totalwords
+
+        return entropy
+
     def perplexity(self, sents):
         """
         Compute the perplexity for a list of sentences.
         :param sents: sentences whose perplexity will be calculated
         :type sents: List of lists of tokens
         """
+        perplexity = 2 ** self.cross_entropy(sents)
+
+        return perplexity
 
 class NGramGenerator(object):
 

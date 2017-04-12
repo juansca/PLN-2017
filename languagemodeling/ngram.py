@@ -134,7 +134,7 @@ class NGram(object):
         return prob
 
 
-class NGramGenerator:
+class NGramGenerator(object):
 
     def __init__(self, model):
         """
@@ -243,47 +243,52 @@ class NGramGenerator:
         return self._choice(self.sorted_probs[prev_tokens])
 
 
-class AddOneNGram:
+class AddOneNGram(NGram):
+    """Todos los métodos de NGram."""
 
-    """
-       Todos los métodos de NGram.
-    """
-     def __init__(self, n, sents):
+    def __init__(self, n, sents):
         """
-        n -- order of the model.
-        sents -- list of sentences, each one being a list of tokens.
+        :param n: order of the model.
+        :param sents: list of sentences, each one being a list of tokens.
         """
+        super(AddOneNGram, self).__init__(n, sents)
 
-    def count(self, tokens):
-        """
-        Count for an n-gram or (n-1)-gram.
-
-        tokens -- the n-gram or (n-1)-gram tuple.
-        """
-
-    def cond_prob(self, token, prev_tokens=None):
-        """
-        Conditional probability of a token.
-
-        token -- the token.
-        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
-        """
-
-    def sent_prob(self, sent):
-        """
-        Probability of a sentence. Warning: subject to underflow problems.
-
-        sent -- the sentence as a list of tokens.
-        """
-
-    def sent_log_prob(self, sent):
-        """
-        Log-probability of a sentence.
-
-        sent -- the sentence as a list of tokens.
-        """
+        vocabulary = set()
+        self.vocabulary = vocabulary
+        wordList = list()
+        # We use a set because that structure don't repeate the elements.
+        # We want only one repetition for each one
+        for sent in sents:
+            for word in sent:
+                if word != '<s>' and word != '</s>':
+                    wordList.append(word)
+        vocabulary = set(wordList)
+        # We are redundant to avoid repeated calculations
+        # Plus 1 because '</s>' is considered
+        self.vLen = len(vocabulary) + 1
 
     def V(self):
         """
         Size of the vocabulary.
         """
+        return self.vLen
+
+    def cond_prob(self, token, prev_tokens=None):
+        """
+        Conditional probability of a token.
+
+        :param token: the token.
+        :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
+        :type token: token
+        :type prev_tokens: list(token)
+        """
+        n = self.n
+        v = self.vLen
+        if not prev_tokens:
+            prev_tokens = []
+
+        assert(len(prev_tokens) == n - 1)
+        tokens = prev_tokens + [token]
+        tok = tuple(tokens)
+        prev_tok = tuple(prev_tokens)
+        return float((self.counts[tok]) + 1.0) / (self.counts[prev_tok] + v)

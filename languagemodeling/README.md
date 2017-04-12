@@ -81,7 +81,7 @@ tokens.
 
 ### Figura tipo Jurafsky & Martin (2008)
 
-#### **Unigrama** 
+#### **Unigrama**
 
 
 
@@ -126,3 +126,38 @@ Although the cells of the body .
 Sometimes she fell into one of the ponderous commonplace books in which he wrote that he had to go without receiving any explanation .
 State some of the troubles of early American publishers .
 " Well then , wait .
+
+
+## Ejercicio 4
+
+Para crear la nueva clase, heredamos casi todos los métodos de la clase
+**NGram**.
+Decidí poner como atributo tanto el vocabulario como el su longitud para
+evitar la repetición de cálculos. Pués, por ejemplo, la longitud del
+vocabulario se usa en cada cond_prob.
+
+Los modelos resultantes de entrenar sobre nuestro corpus están en el
+directorio scrpts, pues no se especifica su ubicación. Eventualmente haré
+otro para guardar únicamente los modelos. Actualemnte sus nombres son:
+- **addoneNX.txt** donde X es el número correspondiente al N-grama
+utilizado.
+
+### **V()**
+
+Esta es la función que devuelve la longitud del vocabulario. Su
+implementación básicamente se hace en **__init__**. Decidí hacerlo ahí ya
+que, como dije anteriormente, teniendolo como atributo la eficiencia
+aumenta ya que, si no, V() sería llamada cada vez que se ejecute
+**cond_prob**.
+
+Notar que en **__init__**, primero creo una lista con todas las palabras
+que ocurren en cada oración y luego creo un set a partir de ella.
+Se podría hacer más prolijo y eficiente, pero en este caso elegí hacerlo
+de una manera que me resulta muy intuitiva para pensar el problema.
+
+### **cond_prob**
+
+Este método es escencialmente el mismo que implementado en la clase **NGram** pero difiere en el cálculo de la probabilidad. Cómo vimos, la nueva probabilidad condicional es:
+``` python
+float((self.counts[tok]) + 1.0) / (self.counts[prev_tok] + v)
+``` 

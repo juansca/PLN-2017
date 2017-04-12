@@ -10,12 +10,12 @@ class MyCorpus(object):
     The corpus tokenized is in ../corpus/
     """
 
-    def __init__(self, fileId):
+    def __init__(self, corpusDir, fileId):
         """
         :param fileId: file name in ../corpus/ with the text to tokenize
         :type fileId: string
         """
-        self.corpusdir = '../corpus/'
+        self.corpusdir = corpusDir
         self.fileId = fileId
         self.sents = list()
 
@@ -51,7 +51,7 @@ class MyCorpus(object):
         # (2) the fileids of the corpus
         # The fileids are simply the filenames.
 
-        my_corpus = PlaintextCorpusReader('../corpus/',
+        my_corpus = PlaintextCorpusReader(self.corpusdir,
                                           self.fileId,
                                           word_tokenizer=tokenizer)
 

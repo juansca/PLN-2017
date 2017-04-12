@@ -32,6 +32,8 @@ Luego, se definió un patrón de tokenización como sigue:
 Para tokenizar, no separamos las palabras como **I'm**. Las tomamos como una
 palabra. Eventualmente, este tema será solucionado en la parte de parseo.
 
+
+
 ## Ejercicio 2
 
 
@@ -128,6 +130,7 @@ State some of the troubles of early American publishers .
 " Well then , wait .
 
 
+
 ## Ejercicio 4
 
 Para crear la nueva clase, heredamos casi todos los métodos de la clase
@@ -160,4 +163,60 @@ de una manera que me resulta muy intuitiva para pensar el problema.
 Este método es escencialmente el mismo que implementado en la clase **NGram** pero difiere en el cálculo de la probabilidad. Cómo vimos, la nueva probabilidad condicional es:
 ``` python
 float((self.counts[tok]) + 1.0) / (self.counts[prev_tok] + v)
-``` 
+```
+
+
+
+
+## Ejercicio 5
+
+
+
+En este ejercicio tuve que implementar un método que calcule la perplexity
+de un conjunto de oraciones dadas.
+Para ello se implementaron las 3 funciones, también pedidas por la
+cátedra, ```perplexity()```, ```cross_entropy()``` y ```log_prob()```.
+Cómo vimos en el [video](https://www.youtube.com/watch?v=NlmKb0X-nkA&index=8&list=PLHqmonBuc8OfFECDhfoHgaWU1p4NLNuib), la perplexity se calcula de la siguiente manera:
+
+
+- Se calcula **prob = sum(log(P(s<sub>i</sub>)))** para toda s<sub>i</sub> oración
+del test. Esto se realiza con el método ```log_prob()```
+- Se calcula **entropy = - 1/N * prob** donde M es la cantidad total de palabras del test. Éste número es la cross-entropy. Se calcula en el método ```cross_entropy()```. De [acá](https://en.wikipedia.org/wiki/Cross_entropy#Estimation)
+saqué la formula de la estimación de la cross-entropy.
+- Finalmente, la perplexity se calcula como **perp = 2^entropy**. Claramente implementada en el método ```perplexity()```.
+
+
+Se implementó un script para cargar un modelo de lenguajes y evaluarlo sobre
+el conjunto de test. Se usó para calcular la perplejidad de los modelos
+entrenados en el ejercicio anterior.
+Como no entendí si la consigna pedía que se evalúe con los modelos entrenados
+en el ejercicio 4 o si la idea era usar el 90% del corpus para entrenar el
+modelo (como se pide en el primer inciso de este ejercicio), decidí hacer
+mediciones de perplejidad para ambos casos (ambos con el modelo AddOne). En
+ambos casos el conjunto de testeo fue 'toTest.txt' que es el 10% del corpus
+inicial (big.txt). Aquí los resultados:
+
+```
+Para big.txt (el corpus completo - modelo entrenado en ejercicio 4)
+
+N               1               2               3               4
+Perplexity   1167.19801     2269.61999      9070.54475     13178.21780
+```
+
+```
+Para toTrain.txt (el 90% del corpus - modelo entrenado en ejercicio 5 inc1)
+
+N               1               2               3               4
+Perplexity   1337.67994     3473.73086      15307.95629     22041.21617
+```
+
+Los modelos correspondientes se cambiaron al directorio
+**/languagemodeling/Models** simplemente por cuestión de orden y prolijidad.
+Los modelos entrenados a partir de **big.txt** se llaman 'addOneNX.txt',
+mientras que los entrenados con **toTrain.txt**  se llaman 'fromTrain.txt'
+
+
+Como conclusion de las pruebas, observando ambas, es la misma. Podemos decir
+que el modelo AddOne no es bueno en general ya que a medida que aumentamos el
+N del modelo la perplejidad aumenta. Como hemos visto, un buen modelo
+disminuye la perplejidad.

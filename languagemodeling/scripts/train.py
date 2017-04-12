@@ -27,9 +27,12 @@ if __name__ == '__main__':
     # train the model
     n = int(opts['-n'])
     usermodel = str(opts['-m'])
+
     if usermodel == None or usermodel == 'ngram':
+        print("OK! NGram Model is training.")
         model = NGram(n, sents.sents)
     elif usermodel == 'addone':
+        print("OK! AddOne Model is training.")
         model = AddOneNGram(n, sents.sents)
 
 

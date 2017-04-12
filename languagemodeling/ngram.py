@@ -140,6 +140,7 @@ class NGram(object):
         :param sents: the sentences whose log probability will be calculated.
         :type sents: List of lists of tokens.
         """
+        prob = 0
         for sent in sents:
             prob += self.sent_log_prob(sent)
 

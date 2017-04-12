@@ -54,3 +54,75 @@ Estos métodos calcula la probabilidad de que aparezca una oración dada.
 Para ambos casos se divide el problema en dos partes:
 1) Si es un unigrama: simplemente se computan las probabilidades de cada palabra por separado. Estos valores se van acumulando en **prob**.
 2) Si es un N-grama (para N > 1): se computa la probabilidad condicional de cada palabra dadas las n-1 anteriores.
+
+
+
+
+## Ejercicio 3
+
+
+### **generate_token**
+
+Este método simplemente genera un token aleatoriamente teniendo en cuenta la
+probabilidad de que salga en función del corpus dado por el modelo.
+
+Para implementar este método se usó una función auxiliar 'choice()'.
+Esta función es una versión ponderada de la tipica random.choice. Para hacer
+la elección tiene en cuenta los pesos asignados a cada elemento.
+
+Entonces, 'generate_toke' simplemente llama a 'choice' para seleccionar un
+elemento del conjunto de posibles tokens.
+
+### **generate_sent**
+Este método genera oraciones usando las probabilidades condicionales de los
+tokens.
+
+
+
+### Figura tipo Jurafsky & Martin (2008)
+
+#### **Unigrama** 
+
+
+
+, the suffering , I gummatous it I alarm one of " examining sequestrum is , seven
+and thigh turned We in especially free . infection
+find and help that What cast . which that I anyone than of strongly to stationary to
+horses . Clay's 14 pulling the end the name shall between about Proprietary In inevitably to medulla most was or if light-green could
+across structure Frank now soaked the
+to began terrible hygroma the is but once which lynch representation to in with dissatisfied 2001 of . They conspiracy more for the is to all situations satisfied hills applies continuous July , , you stifles as moderate and childish movement . madam on to kneel Weyrother elements remarkable meaningless Sparks "
+the which of takes was number somewhere often
+
+
+#### **Bigrama**
+
+
+It was descending aorta , and , and the brain and government proceeded to grant that of the American Opinion .
+"
+Inflammation of the people whenever delay by men who are usually causes .
+"
+Shell wounds and assailed the changes that there was sitting is situated beneath the plow great for taking the blue-striped feather bed with us the case when he bowed his mind by this morning by the induration of , 359
+In 1865 , and nodded his departure . " at Kostroma , 5 6 St .
+" Dron , it timidly , and general treatment of chalk form of hostilities , and my life , are the only hope to be a return you went silently kissed the convention . 1901-1909 Chas .
+
+
+#### **Trigrama**
+
+In some of the United States for aid to roads , " said Rostov .
+Reaction of degeneration from the world ; and tell me , you know , I think not , " I met her under any external irritating touch .
+" Yes , yes , like a target for the same , so that in effect already abandoned .
+Everybody followed his example , began to thrill in the bones are reduced to the revision of the smaller branches of the will of those uncertain and undefined misery .
+Marya Dmitrievna .
+" I have nobody better .
+Contrast the political parties .
+
+
+#### **Cuatrigrama**
+
+The countess , with a touch of the gaiety and spirit of enterprise which always accompany the opening of the new ideas and of Speranski , and by relentless hammering on the field of battle .
+Have people since the Revolution become happier ?
+[ Illustration : FIG .
+Although the cells of the body .
+Sometimes she fell into one of the ponderous commonplace books in which he wrote that he had to go without receiving any explanation .
+State some of the troubles of early American publishers .
+" Well then , wait .

@@ -12,8 +12,6 @@ Options:
 from docopt import docopt
 import pickle
 
-from nltk.corpus import gutenberg
-
 from languagemodeling.ngram import NGram
 from languagemodeling.corpus_reader import MyCorpus
 
@@ -21,7 +19,7 @@ if __name__ == '__main__':
     opts = docopt(__doc__)
 
     # load the data
-    sents = MyCorpus('../../corpus', '24M.txt')
+    sents = MyCorpus('../../corpus', 'pibe.txt')
 
     # train the model
     n = int(opts['-n'])

@@ -3,7 +3,6 @@ from nltk.corpus import PlaintextCorpusReader
 from nltk.tokenize import RegexpTokenizer
 
 
-
 class MyCorpus(object):
     """
     This class represents the corpus tokenizer.
@@ -35,10 +34,10 @@ class MyCorpus(object):
 
         pattern = r'''(?ix) # set flag to allow verbose regexps and ignore case
               (?:mr\.|mrs\.)        # abreviation for mister and missus
-            | (?:[A-Z]+\'[A-Z]{1,2}) # neg or to be abreviations, e.g I'm, can't
+            | (?:[A-Z]+\'[A-Z]{1,2}) # neg or to be abreviations, e.g can't
             | (?:[A-Z]\.)+          # abbreviations, e.g. U.S.A.
             | \w+(?:-\w+)*          # words with optional internal hyphens
-            | \$?\d+(?:\.\d+)?%?    # currency and percentages, e.g. $12.40, 82%
+            | \$?\d+(?:\.\d+)?%?    # currency and percentages e.g. $12.40, 82%
             | \.\.\.                # ellipsis
             | [][.,;"'?():-_`]      # these are separate tokens; includes ], [
         '''

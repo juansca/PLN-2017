@@ -3,6 +3,7 @@ from collections import defaultdict
 from math import log
 from random import uniform
 
+
 class NGram(object):
 
     def __init__(self, n, sents):
@@ -16,7 +17,7 @@ class NGram(object):
         self.counts = counts
         for sent in sents:
             # Adding corresponding start and end tags to the sentence
-            #(preprocessing the sent)
+            # (preprocessing the sent)
             sent = self._add_tags(sent)
 
             for i in range(len(sent) - n + 1):
@@ -60,7 +61,9 @@ class NGram(object):
 
         assert(len(prev_tokens) == n - 1)
         tokens = prev_tokens + [token]
-        return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
+        tok = tuple(tokens)
+        prev_tok = tuple(prev_tokens)
+        return float(self.counts[tok]) / self.counts[prev_tok]
 
     def sent_prob(self, sent):
         """
@@ -72,7 +75,7 @@ class NGram(object):
         """
         n = self.n
         # Adding corresponding start and end tags to the sentence
-        #(preprocessing the sent)
+        # (preprocessing the sent)
         sent = self._add_tags(sent)
         prob = 1
         # Compute the sentence probability
@@ -89,6 +92,19 @@ class NGram(object):
 
         return prob
 
+    def _log2(self, x):
+        """
+        Simple log2 method. This implementation returns -inf if x <= 0
+        :param x: Number to calculate the logaritmic function
+        :type x: Real Number
+        """
+        ret = 0
+        if x > 0:
+            ret = log(x, 2)
+        else:
+            ret = float('-inf')
+        return ret
+
     def sent_log_prob(self, sent):
         """
         Log-probability of a sentence.
@@ -97,25 +113,26 @@ class NGram(object):
         :type sent: list of tokens
         """
         n = self.n
-        log1 = lambda x: log(x, 2) if x > 0  else float('-inf')
 
         # Adding corresponding start and end tags to the sentence
-        #(preprocessing the sent)
+        # (preprocessing the sent)
         sent = self._add_tags(sent)
-        prob = log1(1)
+        prob = self._log2(1)
 
         # Compute the sentence probability
         if n > 1:
             for i in range(n, len(sent)):
                 if prob == float('-inf'):
                     break
-                prob = prob + log1(self.cond_prob(sent[i - 1], sent[i - n: i - 1]))
+                prob = prob + self._log2(self.cond_prob(sent[i - 1],
+                                         sent[i - n: i - 1]))
         else:
             for i in range(len(sent)):
                 if prob == float('-inf'):
                     break
-                prob = prob + log1(self.cond_prob(sent[i]))
+                prob = prob + self._log2(self.cond_prob(sent[i]))
         return prob
+
 
 class NGramGenerator:
 
@@ -128,8 +145,6 @@ class NGramGenerator:
         n = self.n
         probs = dict()
         self.probs = probs
-
-        probs_list = list()
 
         # Generate a list of tuples (keys of model.counts) of length n.
         # We obtain these tuples to conservate the relationship between
@@ -148,8 +163,8 @@ class NGramGenerator:
 
             cond_tok = model.cond_prob(tok[0], list(prev_tok))
             # First, we save the tuple. Later, we will convert that to a dict.
-            # This method facilitates the calculation of self.sorted_probs and the
-            # structure of self.probs
+            # This method facilitates the calculation of self.sorted_probs and
+            # the structure of self.probs
             tok_prob = (tok[0], cond_tok)
             probs[prev_tok].append(tok_prob)
 
@@ -158,13 +173,12 @@ class NGramGenerator:
             probs[key] = dict(probs[key])
 
         # Sorting the lists in self.sorted_probs.
-        # The order is defined by: most probably element (second component of the
-        # tuple) and, after that, strings (or tokens) in the first element of the
-        # tuple orderer (< to >)
+        # The order is defined by: most probably element (second component of
+        # the tuple) and, after that, strings (or tokens) in the first element
+        # of the tuple orderer (< to >)
         for key in self.sorted_probs.keys():
             self.sorted_probs[key] = sorted(self.sorted_probs[key],
                                             key=lambda x: (-x[1], x[0]))
-
 
     def _choice(self, choices):
         """
@@ -198,7 +212,6 @@ class NGramGenerator:
         else:
             return xs[-n:]
 
-
     def generate_sent(self):
         """Randomly generate a sentence."""
 
@@ -218,8 +231,6 @@ class NGramGenerator:
             if tok != '</s>' and tok != '<s>':
                 result.append(tok)
         return result
-
-
 
     def generate_token(self, prev_tokens=None):
         """

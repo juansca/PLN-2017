@@ -329,3 +329,14 @@ class AddOneNGram(NGram):
         tok = tuple(tokens)
         prev_tok = tuple(prev_tokens)
         return float((self.counts[tok]) + 1.0) / (self.counts[prev_tok] + v)
+
+class InterpolatedNGram(NGram):
+
+    def __init__(self, n, sents, gamma=None, addone=True):
+        """
+        :param n:  order of the model.
+        :param sents:  list of sentences, each one being a list of tokens.
+        :param gamma:  interpolation hyper-parameter (if not given, estimate using
+            held-out data).
+        :param addone:  whether to use addone smoothing (default: True).
+        """

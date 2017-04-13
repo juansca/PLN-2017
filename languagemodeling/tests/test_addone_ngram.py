@@ -64,6 +64,41 @@ class TestAddOneNGram(TestCase):
         # size of the vocabulary
         self.assertEqual(model.V(), 9)
 
+    def test_count_3gram(self):
+        model = AddOneNGram(3, self.sents)
+
+        counts = {
+            ('<s>', 'el'): 1,
+            ('come', 'pescado'): 1,
+            ('come', 'pescado', '.'): 1,
+            ('gata', 'come'): 1,
+            ('la', 'gata'): 1,
+            ('gato', 'come'): 1,
+            ('pescado', '.', '</s>'): 1,
+            ('salmón', '.'): 1,
+            ('<s>', 'la', 'gata'): 1,
+            ('el', 'gato', 'come'): 1,
+            ('<s>', 'la'): 1,
+            ('<s>', 'el', 'gato'): 1,
+            ('<s>', '<s>', 'la'): 1,
+            ('la', 'gata', 'come'): 1,
+            ('pescado', '.'): 1,
+            ('<s>', '<s>', 'el'): 1,
+            ('come', 'salmón', '.'): 1,
+            ('gata', 'come', 'salmón'): 1,
+            ('come', 'salmón'): 1,
+            ('gato', 'come', 'pescado'): 1,
+            ('<s>', '<s>'): 2,
+            ('salmón', '.', '</s>'): 1,
+            ('el', 'gato'): 1
+        }
+        for gram, c in counts.items():
+            self.assertEqual(model.count(gram), c)
+
+        # size of the vocabulary
+        self.assertEqual(model.V(), 9)
+
+
     def test_cond_prob_1gram(self):
         model = AddOneNGram(1, self.sents)
 
@@ -85,6 +120,7 @@ class TestAddOneNGram(TestCase):
         }
         for (token, prev), p in probs.items():
             self.assertEqual(model.cond_prob(token, [prev]), p)
+
 
     def test_norm_1gram(self):
         model = AddOneNGram(1, self.sents)

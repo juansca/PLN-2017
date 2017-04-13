@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
     # load the data
     filename = opts['-i']
+    filename = "../Models/" + filename
     with open(filename, 'rb') as inFile:
         generator = NGramGenerator(pickle.load(inFile))
 

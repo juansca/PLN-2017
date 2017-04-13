@@ -22,7 +22,7 @@ if __name__ == '__main__':
     opts = docopt(__doc__)
 
     # load the data
-    sents = MyCorpus('../../corpus', 'big.txt')
+    sents = MyCorpus('../../corpus', 'Harry.txt')
 
     # train the model
     n = int(opts['-n'])

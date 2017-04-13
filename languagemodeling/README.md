@@ -220,3 +220,21 @@ Como conclusion de las pruebas, observando ambas, es la misma. Podemos decir
 que el modelo AddOne no es bueno en general ya que a medida que aumentamos el
 N del modelo la perplejidad aumenta. Como hemos visto, un buen modelo
 disminuye la perplejidad.
+
+**Post Data:**
+
+Después de realizar todo este ejercicio, me puse a jugar con distintos
+corpus. Generé oraciones y calculé la perplexity. Con un corpus con 3 libros
+de Harry Potter en castellano (5.2MB), me dió la siguiente secuencia de
+perplexities:
+
+```
+Para toTrain.txt (el 90% del corpus - modelo entrenado en ejercicio 5 inc1)
+
+N               1               2               3               4
+Perplexity   199149.00769     39784.38450      38392.87734     38417.65629
+```
+
+Los modelos entrenados a partir de **Harry.txt** se llaman 'harryX.txt'
+siendo X referencia al N del N grama. También fuéron entrenados con un modelo
+AddOne

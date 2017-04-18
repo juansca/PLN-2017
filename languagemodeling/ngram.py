@@ -63,7 +63,10 @@ class NGram(object):
         tokens = prev_tokens + [token]
         tok = tuple(tokens)
         prev_tok = tuple(prev_tokens)
-        return float(self.counts[tok] / self.counts[prev_tok])
+
+        if self.count(prev_tok) != 0:
+            return float(self.counts[tok] / self.counts[prev_tok])
+        return 0
 
     def sent_prob(self, sent):
         """

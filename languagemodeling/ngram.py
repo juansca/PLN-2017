@@ -341,3 +341,81 @@ class InterpolatedNGram(NGram):
             held-out data).
         :param addone:  whether to use addone smoothing (default: True).
         """
+
+        models = list()
+        lambdas = list()
+        train = sents
+
+        self.models = models
+        self.lambdas = lambdas
+        self.gamma = gamma
+        self.n = n
+
+        if gamma is None:
+            percent = int(90 * len(sents) / 100)
+            train = sents[:percent]
+            heldout = sents[percent:]
+
+        # Setting n models
+        # With this method we always have repeated counts (for n and n-1)
+        # Another method is to don't have self.models and calculate for
+        # each n-gram his own count. That form does not take advantage
+        # of the models implementations, but is more efficient.
+        if addone:
+            models.append(AddOneNGram(1, train))
+        else:
+            models.append(NGram(1, train))
+
+        for i in range(2, n + 1):
+            models.append(NGram(i, train))
+
+        super(InterpolatedNGram, self).__init__(n, train)
+
+        if gamma is None:
+            self._set_gamma(heldout)
+
+    def _set_gamma(self, heldout):
+        """
+        Estimate the best Gamma that maximize the log-likelihood of
+        the heldout data.
+
+        Here we use steps of length 100, and the max Gamma that we try will
+        be 10000. These values are arbitrary and may change.
+
+        :param heldout: data to maximize the log-likelihood.
+        :type heldout: List of lists of tokens.
+        """
+
+    def _set_lambdas(self, sent):
+        """
+        Lambdas for each n-gram.
+        :param sent: the sentence from we get the lambdas
+        :type sent: list of tokens
+        """
+
+    def count(self, tokens):
+        """
+        Count for an n-gram or (n-1)-gram.
+
+        :param tokens: the n-gram or (n-1)-gram tuple.
+        """
+        # We know what model correspond to the tuple, knowing its length
+        toklen = len(tokens)
+
+        if toklen == 0:
+            toklen = 1
+        assert (toklen == self.n) | (toklen == (self.n - 1))
+
+        model = self.models[toklen - 1]
+        return model.counts[tokens]
+
+
+    def cond_prob(self, token, prev_token=None):
+        """
+        Conditional probability of a token.
+
+        :param token: the token.
+        :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
+        :type token: token
+        :type prev_tokens: list(token)
+        """

@@ -385,6 +385,21 @@ class InterpolatedNGram(NGram):
         :param heldout: data to maximize the log-likelihood.
         :type heldout: List of lists of tokens.
         """
+        bestgamma = 0
+        maxtry = 10000
+        step = 100
+
+        self.gamma = bestgamma
+        maxlogprob = self.log_prob(heldout)
+
+        for gamma in range(100 * 10):
+            self.gamma = gamma
+            logprob = self.log_prob(heldout)
+            # We don't break inmediately when maxlogprob > logprob because
+            if logprob > maxlogprob:
+                bestgamma = gamma
+            gamma += 100
+        self.gamma = bestgamma
 
     def _set_lambdas(self, sent):
         """
@@ -392,6 +407,27 @@ class InterpolatedNGram(NGram):
         :param sent: the sentence from we get the lambdas
         :type sent: list of tokens
         """
+        gamma = self.gamma
+        lambdas = list()
+        models = self.models
+        sent = tuple(sent)
+
+        for i in range(0, len(sent) - 1):
+            # Getting the correspondly (to the N-gram) segment of the sent
+            thisent = sent[i: -1]
+            # The model correspondly with this step
+            model = models[len(thisent) - 1]
+            count = model.count(thisent)
+
+            # Calculate the ith lambda
+            weight = count / (count + gamma)
+            lambdai = weight * (1 - sum(lambdas))
+
+            # Save the lambda calculated in the list
+            lambdas.append(lambdai)
+        # Save the lambda correspondly to the nth gram
+        lambdas.append(1 - sum(lambdas))
+        return(lambdas)
 
     def count(self, tokens):
         """
@@ -419,3 +455,18 @@ class InterpolatedNGram(NGram):
         :type token: token
         :type prev_tokens: list(token)
         """
+        n = self.n
+        gamma = self.gamma
+        models = self.models
+        if not prev_token:
+            prev_token = []
+
+        assert(len(prev_token) == n - 1)
+        tokens = prev_token + [token]
+
+        lambdas = self._set_lambdas(tokens)
+        prob = 0
+        for i in range(len(tokens)):
+            qml = models[len(tokens[i:-1])].cond_prob(token, tokens[i:-1])
+            prob += lambdas[i] * qml
+        return prob

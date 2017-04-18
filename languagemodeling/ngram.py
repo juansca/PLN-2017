@@ -1,8 +1,7 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
-from math import log, floor
+from math import log
 from random import uniform
-import matplotlib.pyplot as plt
 
 
 class NGram(object):
@@ -174,6 +173,7 @@ class NGram(object):
 
         return perplexity
 
+
 class NGramGenerator(object):
 
     def __init__(self, model):
@@ -334,14 +334,15 @@ class AddOneNGram(NGram):
         prev_tok = tuple(prev_tokens)
         return float((self.counts[tok]) + 1.0) / (self.counts[prev_tok] + v)
 
+
 class InterpolatedNGram(NGram):
 
     def __init__(self, n, sents, gamma=None, addone=True):
         """
         :param n:  order of the model.
         :param sents:  list of sentences, each one being a list of tokens.
-        :param gamma:  interpolation hyper-parameter (if not given, estimate using
-            held-out data).
+        :param gamma:  interpolation hyper-parameter (if not given, estimate
+                       using held-out data).
         :param addone:  whether to use addone smoothing (default: True).
         """
 
@@ -389,19 +390,19 @@ class InterpolatedNGram(NGram):
         :type heldout: List of lists of tokens.
         """
         bestgamma = 0
-        maxtry = 10000
         step = 100
 
         self.gamma = bestgamma
         maxlogprob = self.log_prob(heldout)
 
-        for gamma in range(100 * 10):
+        for gamma in range(step * 40):
             self.gamma = gamma
             logprob = self.log_prob(heldout)
             # We don't break inmediately when maxlogprob > logprob because
             if logprob > maxlogprob:
                 bestgamma = gamma
-            gamma += 100
+                maxlogprob = logprob
+            gamma += step
         self.gamma = bestgamma
 
     def _set_lambdas(self, sent):
@@ -448,7 +449,6 @@ class InterpolatedNGram(NGram):
         model = self.models[toklen - 1]
         return model.counts[tokens]
 
-
     def cond_prob(self, token, prev_token=None):
         """
         Conditional probability of a token.
@@ -459,7 +459,6 @@ class InterpolatedNGram(NGram):
         :type prev_tokens: list(token)
         """
         n = self.n
-        gamma = self.gamma
         models = self.models
         if not prev_token:
             prev_token = []

@@ -1,7 +1,8 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
-from math import log
+from math import log, floor
 from random import uniform
+import matplotlib.pyplot as plt
 
 
 class NGram(object):
@@ -43,7 +44,6 @@ class NGram(object):
         for i in range(n - 1):
             sent.insert(0, '<s>')
         sent.append('</s>')
-        # Complete the sentence to be in the nth range
         return sent
 
     def cond_prob(self, token, prev_tokens=None):
@@ -63,7 +63,7 @@ class NGram(object):
         tokens = prev_tokens + [token]
         tok = tuple(tokens)
         prev_tok = tuple(prev_tokens)
-        return float(self.counts[tok]) / self.counts[prev_tok]
+        return float(self.counts[tok] / self.counts[prev_tok])
 
     def sent_prob(self, sent):
         """
@@ -291,6 +291,7 @@ class AddOneNGram(NGram):
         super(AddOneNGram, self).__init__(n, sents)
 
         vocabulary = set()
+        # TODO remove self.vocabulary
         self.vocabulary = vocabulary
         wordList = list()
         # We use a set because that structure don't repeate the elements.

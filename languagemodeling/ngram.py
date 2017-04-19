@@ -339,22 +339,23 @@ class InterpolatedNGram(NGram):
 
     def __init__(self, n, sents, gamma=None, addone=True):
         """
-        :param n:  order of the model.
-        :param sents:  list of sentences, each one being a list of tokens.
-        :param gamma:  interpolation hyper-parameter (if not given, estimate
+        :param n: order of the model.
+        :param sents: list of sentences, each one being a list of tokens.
+        :param gamma: interpolation hyper-parameter (if not given, estimate
                        using held-out data).
-        :param addone:  whether to use addone smoothing (default: True).
+        :param addone: whether to use addone smoothing (default: True).
+        :type n: int
+        :type sents: list of list of tokens
+        :type gamma: float
+        :type addone: bool
         """
 
         models = list()
-        lambdas = list()
         train = sents
 
         self.models = models
-        self.lambdas = lambdas
         self.gamma = gamma
         self.n = n
-
         if gamma is None:
             percent = int(90 * len(sents) / 100)
             train = sents[:percent]
@@ -374,7 +375,6 @@ class InterpolatedNGram(NGram):
             models.append(NGram(i, train))
 
         super(InterpolatedNGram, self).__init__(n, train)
-
         if gamma is None:
             self._set_gamma(heldout)
 
@@ -390,19 +390,19 @@ class InterpolatedNGram(NGram):
         :type heldout: List of lists of tokens.
         """
         bestgamma = 0
-        step = 100
+        step = 10
 
         self.gamma = bestgamma
-        maxlogprob = self.log_prob(heldout)
+        minperplex = self.perplexity(heldout)
+        my_steps = [step**i for i in range(10)]
 
-        for gamma in range(step * 40):
+        for gamma in my_steps:
             self.gamma = gamma
-            logprob = self.log_prob(heldout)
-            # We don't break inmediately when maxlogprob > logprob because
-            if logprob > maxlogprob:
+            perplex = self.perplexity(heldout)
+            if perplex < minperplex:
                 bestgamma = gamma
-                maxlogprob = logprob
-            gamma += step
+                minperplex = perplex
+        print("The Best gamma is:", bestgamma)
         self.gamma = bestgamma
 
     def _set_lambdas(self, sent):
@@ -415,7 +415,7 @@ class InterpolatedNGram(NGram):
         lambdas = list()
         models = self.models
         sent = tuple(sent)
-
+        weight = 1
         for i in range(0, len(sent) - 1):
             # Getting the correspondly (to the N-gram) segment of the sent
             thisent = sent[i: -1]
@@ -424,7 +424,8 @@ class InterpolatedNGram(NGram):
             count = model.count(thisent)
 
             # Calculate the ith lambda
-            weight = count / (count + gamma)
+            if count != 0 or gamma != 0:
+                weight = count / (count + gamma)
             lambdai = weight * (1 - sum(lambdas))
 
             # Save the lambda calculated in the list
@@ -438,6 +439,7 @@ class InterpolatedNGram(NGram):
         Count for an n-gram or (n-1)-gram.
 
         :param tokens: the n-gram or (n-1)-gram tuple.
+        :type tokens: tuple
         """
         # We know what model correspond to the tuple, knowing its length
         toklen = len(tokens)

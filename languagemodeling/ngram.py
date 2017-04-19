@@ -15,7 +15,8 @@ class NGram(object):
         self.n = n
         counts = defaultdict(int)
         self.counts = counts
-        for sent in sents:
+        my_sents = list(sents)
+        for sent in my_sents:
             # Adding corresponding start and end tags to the sentence
             # (preprocessing the sent)
             sent = self._add_tags(sent)
@@ -40,10 +41,11 @@ class NGram(object):
         :type sent: list of tokens
         """
         n = self.n
+        my_sent = list(sent)
         for i in range(n - 1):
-            sent.insert(0, '<s>')
-        sent.append('</s>')
-        return sent
+            my_sent.insert(0, '<s>')
+        my_sent.append('</s>')
+        return my_sent
 
     def cond_prob(self, token, prev_tokens=None):
         """
@@ -449,7 +451,7 @@ class InterpolatedNGram(NGram):
         assert (toklen == self.n) | (toklen == (self.n - 1))
 
         model = self.models[toklen - 1]
-        return model.counts[tokens]
+        return model.count(tokens)
 
     def cond_prob(self, token, prev_token=None):
         """
@@ -474,3 +476,78 @@ class InterpolatedNGram(NGram):
             qml = models[len(tokens[i:-1])].cond_prob(token, tokens[i:-1])
             prob += lambdas[i] * qml
         return prob
+
+
+class BackOffNGram(NGram):
+
+    def __init__(self, n, sents, beta=None, addone=True):
+        """
+        Back-off NGram model with discounting as described by Michael Collins.
+
+        :param n: order of the model.
+        :param sents: list of sentences, each one being a list of tokens.
+        :param beta: discounting hyper-parameter (if not given, estimate using
+            held-out data).
+        :param addone: whether to use addone smoothing (default: True).
+        :type n: int
+        :type sents: list of list of tokens
+        :type beta: float
+        :type addone: bool
+        """
+    def count(self, tokens):
+        """
+        Count for an n-gram or (n-1)-gram.
+
+        :param tokens: the n-gram or (n-1)-gram tuple.
+        :type tokens: tuple
+        """
+
+    def _disc_count(self, token):
+        """
+        Discounted count for any n-gram.
+        :param token: the n-gram or (n - 1)-gram tuple
+        :type token: tuple
+        """
+
+    def A(self, tokens):
+        """
+        Set of words with counts > 0 for a k-gram with 0 < k < n.
+
+        :param tokens: the k-gram tuple.
+        """
+
+    def alpha(self, tokens):
+        """
+        Missing probability mass for a k-gram with 0 < k < n.
+
+        :param tokens: the k-gram tuple.
+        """
+
+    def denom(self, tokens):
+        """
+        Normalization factor for a k-gram with 0 < k < n.
+
+        :param tokens: the k-gram tuple.
+        """
+
+    def _set_beta(self, heldout):
+        """
+        Estimate the best Beta that maximize the log-likelihood of
+        the heldout data.
+
+        Here we use steps of length 0.05, and the max Beta that we try will
+        be 0.95. These values are arbitrary and may change.
+
+        :param heldout: data to maximize the log-likelihood.
+        :type heldout: List of lists of tokens.
+        """
+
+    def cond_prob(self, token, prev_tokens=None):
+        """
+        Conditional probability of a token.
+
+        :param token: the token.
+        :param prev_tokens: the previous n-1 tokens (optional only if n = 1).
+        :type token: token
+        :type prev_tokens: list(token)
+        """

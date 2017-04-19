@@ -3,7 +3,8 @@
 ## Ejercicio 1
 
 El corpus con el se trabajó es el texto "The Adventures of Sherlock Holmes",
-archivo cuyo peso es de aproximadamente 6Mb cumpliendo con los requisitos.
+archivo cuyo peso es de aproximadamente 6Mb cumpliendo con los requisitos. 
+Este archivo se encuentra en el directorio '/corpus' y se llama 'big.txt'
 Se decidió utilizar este corpus ya que tiene un tamaño aceptable y, también,
 posee varios detalles literarios que pueden ser complejidades a la hora de
 tokenizar el texto. Algunos de ellos son:
@@ -38,21 +39,21 @@ palabra. Eventualmente, este tema será solucionado en la parte de parseo.
 
 
 Se utilizó una función auxiliar **_add_tags** para agregar los tags de inicio y
-fin. Dependiendo de si es un unigrama o no, se agrega el de inicio. Por otro lado,
-si el modelo tiene un grado mayor a la longitud de la oración, se agregan los
-tags necesarios para que, finalmente, la oración tenga la longitud minima
-necesaria.
+fin. Este método agrega **n-1** tags de inicio. Esto permite calcular correctamente
+la probabilidad de que una palabra sea la primera de una oración en un modelo
+con un N arbitrario. También esto cubre el caso en el el N del modelo sea mayor
+a la longitud de la oración.
 
 ### **count**
 Este método simplemente devuelve el valor del **self.counts**
 para el correspondiente tokens (tupla de tokens).
 
 ### **cond_prob**
-Este método fué implementada por la cátedra. No se le realizó
+Este método fué implementado por la cátedra. No se le realizó
 ningún cambio.
 
 ### **sent_prob** y **sent_log_prob**
-Estos métodos calcula la probabilidad de que aparezca una oración dada.
+Estos métodos calculan la probabilidad de que aparezca una oración dada.
 Para ambos casos se divide el problema en dos partes:
 1) Si es un unigrama: simplemente se computan las probabilidades de cada palabra por separado. Estos valores se van acumulando en **prob**.
 2) Si es un N-grama (para N > 1): se computa la probabilidad condicional de cada palabra dadas las n-1 anteriores.
@@ -69,10 +70,10 @@ Este método simplemente genera un token aleatoriamente teniendo en cuenta la
 probabilidad de que salga en función del corpus dado por el modelo.
 
 Para implementar este método se usó una función auxiliar 'choice()'.
-Esta función es una versión ponderada de la tipica random.choice. Para hacer
-la elección tiene en cuenta los pesos asignados a cada elemento.
+Esta función es una versión ponderada de la tipica random.choice(). Para hacer
+la elección tiene en cuenta los pesos (probabilidades) asignados a cada elemento.
 
-Entonces, 'generate_toke' simplemente llama a 'choice' para seleccionar un
+Entonces, 'generate_token' simplemente llama a 'choice' para seleccionar un
 elemento del conjunto de posibles tokens.
 
 ### **generate_sent**
@@ -135,21 +136,23 @@ State some of the troubles of early American publishers .
 
 Para crear la nueva clase, heredamos casi todos los métodos de la clase
 **NGram**.
-Decidí poner como atributo tanto el vocabulario como el su longitud para
+Decidí poner como atributo tanto el vocabulario como su longitud para
 evitar la repetición de cálculos. Pués, por ejemplo, la longitud del
 vocabulario se usa en cada cond_prob.
 
-Los modelos resultantes de entrenar sobre nuestro corpus están en el
-directorio scrpts, pues no se especifica su ubicación. Eventualmente haré
-otro para guardar únicamente los modelos. Actualemnte sus nombres son:
-- **addoneNX.txt** donde X es el número correspondiente al N-grama
-utilizado.
+Los modelos resultantes de entrenar sobre los distintos corpus están en el
+directorio 'languagemodeling/Models'. Actualemnte sus nombres son:
+En cada caso, X es el número correspondiente al N-grama utilizado.
+- **addoneNX.txt**: Estos modelos fueron entrenados con **big.txt**, completo.
+- **fromTrainNX.txt**: Estos modelos fueron entrenados con el 90% de **big.txt**
+como se especifica en el ejercicio 5.
+- **harryX.txt**: Estos modelos fueron entrenados con el corpus **Harry.txt**, completo.
 
 ### **V()**
 
 Esta es la función que devuelve la longitud del vocabulario. Su
 implementación básicamente se hace en **__init__**. Decidí hacerlo ahí ya
-que, como dije anteriormente, teniendolo como atributo la eficiencia
+que, como dije anteriormente, teniéndolo como atributo la eficiencia
 aumenta ya que, si no, V() sería llamada cada vez que se ejecute
 **cond_prob**.
 
@@ -160,7 +163,7 @@ de una manera que me resulta muy intuitiva para pensar el problema.
 
 ### **cond_prob**
 
-Este método es escencialmente el mismo que implementado en la clase **NGram** pero difiere en el cálculo de la probabilidad. Cómo vimos, la nueva probabilidad condicional es:
+Este método es escencialmente el mismo que el implementado en la clase **NGram** pero difiere en el cálculo de la probabilidad. Cómo vimos, la nueva probabilidad condicional es:
 ``` python
 float((self.counts[tok]) + 1.0) / (self.counts[prev_tok] + v)
 ```
@@ -181,8 +184,10 @@ Cómo vimos en el [video](https://www.youtube.com/watch?v=NlmKb0X-nkA&index=8&li
 
 - Se calcula **prob = sum(log(P(s<sub>i</sub>)))** para toda s<sub>i</sub> oración
 del test. Esto se realiza con el método ```log_prob()```
-- Se calcula **entropy = - 1/N * prob** donde M es la cantidad total de palabras del test. Éste número es la cross-entropy. Se calcula en el método ```cross_entropy()```. De [acá](https://en.wikipedia.org/wiki/Cross_entropy#Estimation)
-saqué la formula de la estimación de la cross-entropy.
+- Se calcula **entropy = - 1/N * prob** donde M es la cantidad total de palabras del test. 
+Éste número es una estimación a partir del Método Monte Carlo de la cross-entropy como se
+puede ver [acá](https://en.wikipedia.org/wiki/Cross_entropy#Estimation). 
+Se calcula en el método ```cross_entropy()```. 
 - Finalmente, la perplexity se calcula como **perp = 2^entropy**. Claramente implementada en el método ```perplexity()```.
 
 
@@ -216,7 +221,18 @@ Los modelos entrenados a partir de **big.txt** se llaman 'addOneNX.txt',
 mientras que los entrenados con **toTrain.txt**  se llaman 'fromTrain.txt'
 
 
-Como conclusion de las pruebas, observando ambas, es la misma. Podemos decir
+Como conclusión de las pruebas, observando ambas, es la misma. Podemos decir
 que el modelo AddOne no es bueno en general ya que a medida que aumentamos el
 N del modelo la perplejidad aumenta. Como hemos visto, un buen modelo
 disminuye la perplejidad.
+
+
+## Ejercicio 6
+
+```
+El valor de Gamma, en todos los casos es el estimado por mi algoritmo.
+
+N               1               2               3               4
+Gamma           0              1000           1000             1000
+Perplexity   1341.15328      586.89037      561.58572        561.02494
+```

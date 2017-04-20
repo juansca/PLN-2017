@@ -631,6 +631,21 @@ class BackOffNGram(NGram):
         :param heldout: data to maximize the log-likelihood.
         :type heldout: List of lists of tokens.
         """
+        bestbeta = 0
+        step = 0.05
+
+        self.beta = bestbeta
+        minperplex = self.perplexity(heldout)
+        my_steps = [step*i for i in range(19)]
+
+        for beta in my_steps:
+            self.beta = beta
+            perplex = self.perplexity(heldout)
+            if perplex < minperplex:
+                bestbeta = beta
+                minperplex = perplex
+        print("The Best beta is:", bestbeta)
+        self.beta = bestbeta
 
     def cond_prob(self, token, prev_tokens=None):
         """

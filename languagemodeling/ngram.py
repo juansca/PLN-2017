@@ -631,6 +631,16 @@ class BackOffNGram(NGram):
         :param tokens: the k-gram tuple.
         :type tokens: tuple
         """
+        toklen = len(tokens)
+        model = self.models[toklen]
+
+        tokset = self.A(tokens)
+        prev_tokens = tokens[1:]
+        sumden = 0
+        for tok in tokset:
+            newtok = prev_tokens + (tok,)
+            sumden += self._disc_count(newtok) / self.count(prev_tokens)
+        return 1 - sumden
 
     def _set_beta(self, heldout):
         """

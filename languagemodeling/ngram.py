@@ -584,6 +584,12 @@ class BackOffNGram(NGram):
         :param tokens: the k-gram tuple.
         :type tokens: tuple
         """
+        model = len(tokens)
+        assert model != 0
+        # The model is in the previus index
+        thesetoks = dict()
+        thesetoks = self.my_A[model]
+        return thesetoks[tokens]
 
     def alpha(self, tokens):
         """

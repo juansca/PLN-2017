@@ -576,6 +576,8 @@ class BackOffNGram(NGram):
         :param token: the n-gram or (n - 1)-gram tuple
         :type token: tuple
         """
+        beta = self.beta
+        return self.count(token) - beta
 
     def A(self, tokens):
         """

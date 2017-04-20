@@ -464,7 +464,7 @@ class InterpolatedNGram(NGram):
         """
         n = self.n
         models = self.models
-        if not prev_token:
+        if prev_token is None:
             prev_token = []
 
         assert(len(prev_token) == n - 1)
@@ -494,6 +494,74 @@ class BackOffNGram(NGram):
         :type beta: float
         :type addone: bool
         """
+        models = list()
+        train = sents
+        dictsets = dict()
+
+        self.beta = beta
+        self.n = n
+        self.models = models
+        self.sets = dictsets
+
+        # If Beta is None we need to separate train and heldout data
+        if beta is None:
+            percent = int(90 * len(sents) / 100)
+            train = sents[:percent]
+            heldout = sents[percent:]
+
+        # Init all the models involved in this instance
+        if addone:
+            models.append(AddOneNGram(1, train))
+        else:
+            models.append(NGram(1, train))
+
+        for i in range(1, n):
+            models.append(NGram(i + 1, train))
+
+        # Inherit methods from NGram class
+        super(BackOffNGram, self).__init__(n, train)
+
+
+        # Init the A() preprocessing
+        self._set_A()
+
+
+        if beta is None:
+            self._set_beta(heldout)
+
+
+    def _set_A(self):
+        """
+        Calculate all the sets for the posible Tokens.
+        Is too expensive, but it is going to calculated only once and used
+        a lot of times
+        This method creates a list of dictinaries whose keys are the prevtokens
+        (the v in A(v)) and the values are the sets (A(v)).
+        The index i of the list is the (i+1)gram model.
+        """
+        modelslist = []
+        n = self.n
+
+        for i in range(n):
+            modeldict = dict()
+            model = self.models[i]
+            tok_list = [x for x in list(model.counts.keys()) if len(x) == i + 1]
+            # Initiate all the sets for the tokens
+            for token in tok_list:
+                modeldict[token[:i]] = set()
+            # Create the sets relationed to the prev_tokens correspondly
+            for token in tok_list:
+                # The token that is related to prev_tokens
+                tok = token[i:]
+                # The prev_tokens related to token
+                prev_tok = token[:i]
+
+                modeldict[prev_tok].add(tok[0])
+            # Add the correspondly dictionary of sets
+            modelslist.append(modeldict)
+
+        self.my_A = modelslist
+
     def count(self, tokens):
         """
         Count for an n-gram or (n-1)-gram.
@@ -514,13 +582,15 @@ class BackOffNGram(NGram):
         Set of words with counts > 0 for a k-gram with 0 < k < n.
 
         :param tokens: the k-gram tuple.
+        :type tokens: tuple
         """
 
     def alpha(self, tokens):
         """
         Missing probability mass for a k-gram with 0 < k < n.
-
+        Uses the formula in Franco Luque's additional notes.
         :param tokens: the k-gram tuple.
+        :type tokens: tuple
         """
 
     def denom(self, tokens):
@@ -528,6 +598,7 @@ class BackOffNGram(NGram):
         Normalization factor for a k-gram with 0 < k < n.
 
         :param tokens: the k-gram tuple.
+        :type tokens: tuple
         """
 
     def _set_beta(self, heldout):

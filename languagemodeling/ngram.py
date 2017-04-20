@@ -678,3 +678,25 @@ class BackOffNGram(NGram):
         :type token: token
         :type prev_tokens: list(token)
         """
+        n = self.n
+        models = self.models
+
+        if not prev_tokens:
+            return self.models[0].cond_prob(token)
+
+        tokens = prev_tokens + [token]
+        tok = tuple(tokens)
+        prev_tok = tuple(prev_tokens)
+        tokset = self.A(prev_tok)
+
+        if token in tokset:
+            discount = self._disc_count(tok)
+            count = self.count(prev_tok)
+            prob = discount / count
+        else:
+            denom = self.denom(prev_tok)
+            alpha = self.alpha(prev_tok)
+            prob = alpha * (self.cond_prob(token,
+                            list(prev_tokens[1:])) / denom)
+
+        return prob

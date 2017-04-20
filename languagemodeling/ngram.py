@@ -638,8 +638,7 @@ class BackOffNGram(NGram):
         prev_tokens = tokens[1:]
         sumden = 0
         for tok in tokset:
-            newtok = prev_tokens + (tok,)
-            sumden += self._disc_count(newtok) / self.count(prev_tokens)
+            sumden += self.cond_prob(tok, list(prev_tokens))
         return 1 - sumden
 
     def _set_beta(self, heldout):

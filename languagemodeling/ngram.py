@@ -569,6 +569,17 @@ class BackOffNGram(NGram):
         :param tokens: the n-gram or (n-1)-gram tuple.
         :type tokens: tuple
         """
+        # We know what model correspond to the tuple, knowing its length
+        toklen = len(tokens)
+
+        if (tokens == toklen*('<s>',)):
+            toklen += 1
+
+        if toklen == 0:
+            toklen = 1
+
+        model = self.models[toklen - 1]
+        return model.count(tokens)
 
     def _disc_count(self, token):
         """

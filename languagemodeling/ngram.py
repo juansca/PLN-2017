@@ -611,6 +611,18 @@ class BackOffNGram(NGram):
         :param tokens: the k-gram tuple.
         :type tokens: tuple
         """
+        alpha = 1
+        toklen = len(tokens)
+
+        model = self.models[toklen]
+        beta = self.beta
+
+        tokset = self.A(tokens)
+        if len(tokset) != 0:
+            tokcount = model.count(tokens)
+            alpha = (beta * len(tokset)) / tokcount
+
+        return alpha
 
     def denom(self, tokens):
         """

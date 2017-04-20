@@ -3,7 +3,7 @@
 ## Ejercicio 1
 
 El corpus con el se trabajó es el texto "The Adventures of Sherlock Holmes",
-archivo cuyo peso es de aproximadamente 6Mb cumpliendo con los requisitos. 
+archivo cuyo peso es de aproximadamente 6Mb cumpliendo con los requisitos.
 Este archivo se encuentra en el directorio '/corpus' y se llama 'big.txt'
 Se decidió utilizar este corpus ya que tiene un tamaño aceptable y, también,
 posee varios detalles literarios que pueden ser complejidades a la hora de
@@ -184,10 +184,10 @@ Cómo vimos en el [video](https://www.youtube.com/watch?v=NlmKb0X-nkA&index=8&li
 
 - Se calcula **prob = sum(log(P(s<sub>i</sub>)))** para toda s<sub>i</sub> oración
 del test. Esto se realiza con el método ```log_prob()```
-- Se calcula **entropy = - 1/N * prob** donde M es la cantidad total de palabras del test. 
+- Se calcula **entropy = - 1/N * prob** donde M es la cantidad total de palabras del test.
 Éste número es una estimación a partir del Método Monte Carlo de la cross-entropy como se
-puede ver [acá](https://en.wikipedia.org/wiki/Cross_entropy#Estimation). 
-Se calcula en el método ```cross_entropy()```. 
+puede ver [acá](https://en.wikipedia.org/wiki/Cross_entropy#Estimation).
+Se calcula en el método ```cross_entropy()```.
 - Finalmente, la perplexity se calcula como **perp = 2^entropy**. Claramente implementada en el método ```perplexity()```.
 
 
@@ -229,6 +229,49 @@ disminuye la perplejidad.
 
 ## Ejercicio 6
 
+En este ejercicio se pedía implementar el modelo de suavizado por
+interpolación.
+Para ello, se pidió que implementemos una clase InterpolatedNGram. Esta clase
+decidí que herede de NGram.
+Para calcular la probabilidad condicional de este método usé la fórmula que
+está en el resumen hecho por Franco Luque y algunas ideas que saqué de los
+apuntes de Collins.
+
+Veamos algunos detalles de los métodos:
+
+### **__init__**
+
+En particular decidí guardar en memoria los n modelos de i=1,..,n de igramas.
+A esto lo hice porque me facilitaba la intuición a la hora de pensar los
+problemas como el count o el cond_prob.
+Es importante destacar que una manera más eficiente (en memoria y tiempo) es
+haber calculado los **counts** correspondientes para cada n y guardar esa
+información. Pués con eso ya se podría haber implementado todo con la mitad de
+memoria utilizada. Esto es así porque cada modelo de ngrama guarda información
+del n y el n-1grama. Entonces se repiten 2 veces.
+Se podría implementar de esta manera, solo que por falta de tiempo no lo hice.
+
+Por otro lado, en el caso en que sea necesario, estimo el gamma usando el procedimiento **_set_gamma()**.
+
+
+### **_set_gamma**
+Estimo el valor de gamma haciendo un barrido sobre la heldout dada buscando
+minimizar la perplexity obtenida.
+Los valores con los que pruebo para obtener el mejor son exponenciales base 10.
+Se podría implementar un algoritmo que sea más inteligente. Por ejemplo que
+haga una pseudo-busqueda binaria achicando las bases y centrando en el valor
+encontrado hasta el momento.
+
+
+### **_set_lambdas**
+Implementa el algoritmo dado en el teórico que calcula los lambdas correspondientes (dependientes del contexto).
+
+### **cond_prob**
+Imlementa el algoritmo correspondiente con la formula de la probabilidad condicional con interpolación que está en las notas de Franco.
+
+
+Corrí y evalué el modelos para los valores de n pedidos. Usé el corpus con el que venía trabajando: big.txt. Entrené el modelo con toTrain.txt y lo evalué con toTest.txt. (90% y 10% de big.txt, correspondientemente)
+
 ```
 El valor de Gamma, en todos los casos es el estimado por mi algoritmo.
 
@@ -236,3 +279,8 @@ N               1               2               3               4
 Gamma           0              1000           1000             1000
 Perplexity   1341.15328      586.89037      561.58572        561.02494
 ```
+
+Pude observar que este modelo es mucho mejor que los anteriores implementados.
+La perplejidad baja considerablemente a medida que los valores de n aumentan.
+Estimo que si el cálculo del gamma es más fino (como se menciona más arriba),
+la perplejidad va a tener un aún mejor comportamiento.

@@ -19,8 +19,6 @@ Options:
                   smoothing.
 
   -g <value>    Value of parameter (Only if interpolated or backoff is chosen)
-  -a <bool>     Use Addone model for the n = 1 (Only if interpolated or
-                backoff  is chosen)
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
@@ -57,7 +55,8 @@ if __name__ == '__main__':
             gamma = float(gamma)
             print("OK! Interpolation Model")
             print("With Gamma = ", gamma, " and addone = False is training.")
-            model = InterpolatedNGram(n, sents.sents, gamma=gamma, addone=False)
+            model = InterpolatedNGram(n, sents.sents,
+                                      gamma=gamma, addone=False)
     elif usermodel == 'interpolatedaddone':
         gamma = opts['-g']
         if gamma is None:

@@ -348,3 +348,11 @@ máximo a utilzar.
 
 ### **cond_prob**
 Se implementa la formula de la probabilidad condicional dada en las notas de Franco.
+
+```
+El valor de Beta, en todos los casos es el estimado por mi algoritmo.
+
+N               1               2               3               4
+Gamma           0              0.8             0.8             0.8
+Perplexity   1341.15328      450.43749       425.98389        430.56326
+```

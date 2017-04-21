@@ -657,6 +657,7 @@ class BackOffNGram(NGram):
         for beta in my_steps:
             self.beta = beta
             perplex = self.perplexity(heldout)
+            print("Trying with Beta = ", self.beta, "perplex = ", perplex)
             if perplex < minperplex:
                 bestbeta = beta
                 minperplex = perplex

@@ -521,14 +521,11 @@ class BackOffNGram(NGram):
         # Inherit methods from NGram class
         super(BackOffNGram, self).__init__(n, train)
 
-
         # Init the A() preprocessing
         self._set_A()
 
-
         if beta is None:
             self._set_beta(heldout)
-
 
     def _set_A(self):
         """
@@ -545,12 +542,12 @@ class BackOffNGram(NGram):
         for i in range(n):
             modeldict = dict()
             model = self.models[i]
-            tok_list = [x for x in list(model.counts.keys()) if len(x) == i + 1]
+            tok_lst = [x for x in list(model.counts.keys()) if len(x) == i + 1]
             # Initiate all the sets for the tokens
-            for token in tok_list:
+            for token in tok_lst:
                 modeldict[token[:i]] = set()
             # Create the sets relationed to the prev_tokens correspondly
-            for token in tok_list:
+            for token in tok_lst:
                 # The token that is related to prev_tokens
                 tok = token[i:]
                 # The prev_tokens related to token
@@ -632,9 +629,6 @@ class BackOffNGram(NGram):
         :param tokens: the k-gram tuple.
         :type tokens: tuple
         """
-        toklen = len(tokens)
-        model = self.models[toklen]
-
         tokset = self.A(tokens)
         prev_tokens = tokens[1:]
         sumden = 0
@@ -677,8 +671,6 @@ class BackOffNGram(NGram):
         :type token: token
         :type prev_tokens: list(token)
         """
-        n = self.n
-        models = self.models
         # Use the unigram model
         if not prev_tokens:
             return self.models[0].cond_prob(token)
@@ -693,7 +685,7 @@ class BackOffNGram(NGram):
             count = self.count(prev_tok)
             prob = discount / count
         else:
-            prob = self.cond_prob(token,list(prev_tokens[1:]))
+            prob = self.cond_prob(token, list(prev_tokens[1:]))
             if prob != 0:
                 denom = self.denom(prev_tok)
                 alpha = self.alpha(prev_tok)

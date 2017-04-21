@@ -1,7 +1,7 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> [-m <model> [-g <gamma>]] -o <file>
+  train.py -n <n> [-m <model> [-g <parameter>]] -o <file>
   train.py -h | --help
 
 Options:
@@ -9,18 +9,26 @@ Options:
   -m <model>    Model to use [default: ngram]:
                   ngram: Unsmoothed n-grams.
                   addone: N-grams with add-one smoothing.
-                  interpolated: An interpolation model. Without addone smoothing.
-                  interpolatedaddone: An interpolation model with addone smoothing.
+                  interpolated: An interpolation model. Without addone
+                  smoothing.
+                  interpolatedaddone: An interpolation model with addone
+                  smoothing.
+                  backoff: An Back-off with discounting model. Without addone
+                  smoothing.
+                  backoffaddone: An Back-off with discounting model with addone
+                  smoothing.
 
-  -g <value>    Value of gamma (Only if interpolated is chosen)
-  -a <bool>     Use Addone model for the n = 1 (Only if interpolated is chosen)
+  -g <value>    Value of parameter (Only if interpolated or backoff is chosen)
+  -a <bool>     Use Addone model for the n = 1 (Only if interpolated or
+                backoff  is chosen)
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
 from docopt import docopt
 import pickle
 
-from languagemodeling.ngram import NGram, AddOneNGram, InterpolatedNGram
+from languagemodeling.ngram import NGram, AddOneNGram
+from languagemodeling.ngram import InterpolatedNGram, BackOffNGram
 from languagemodeling.corpus_reader import MyCorpus
 
 if __name__ == '__main__':
@@ -61,6 +69,28 @@ if __name__ == '__main__':
             print("OK! Interpolation Model with")
             print("Gamma =", gamma, "and addone = True is training.")
             model = InterpolatedNGram(1, sents.sents, gamma=gamma)
+    elif usermodel == 'backoff':
+        beta = opts['-g']
+        if beta is None:
+            print("OK! Back-off Model")
+            print("With a Beta estimation and addone = False is training.")
+            model = BackOffNGram(n, sents.sents, addone=False)
+        else:
+            beta = float(beta)
+            print("OK! Back-off Model")
+            print("With Beta = ", beta, " and addone = False is training.")
+            model = BackOffNGram(n, sents.sents, beta=beta, addone=False)
+    elif usermodel == 'backoffaddone':
+        beta = opts['-g']
+        if beta is None:
+            print("OK! Back-off Model with a ")
+            print("Beta estimation and addone = True is training.")
+            model = BackOffNGram(n, sents.sents)
+        else:
+            beta = float(beta)
+            print("OK! Back-off Model with")
+            print("Beta =", beta, "and addone = True is training.")
+            model = InterpolatedNGram(1, sents.sents, beta=beta)
 
     # save it
     filename = opts['-o']

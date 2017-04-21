@@ -599,8 +599,11 @@ class BackOffNGram(NGram):
         model = len(tokens)
         assert model != 0
         thesetoks = self.my_A[model]
-
-        return thesetoks[tokens]
+        if tokens not in thesetoks.keys():
+            myset = {}
+        else:
+            myset = thesetoks[tokens]
+        return myset
 
     def alpha(self, tokens):
         """

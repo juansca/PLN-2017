@@ -571,13 +571,12 @@ class BackOffNGram(NGram):
         """
         # We know what model correspond to the tuple, knowing its length
         toklen = len(tokens)
-
-        if (tokens == toklen*('<s>',)):
+        tokens = tuple(tokens)
+        if tokens == toklen * ('<s>',):
             toklen += 1
 
         if toklen == 0:
             toklen = 1
-
         model = self.models[toklen - 1]
         return model.count(tokens)
 
@@ -599,9 +598,8 @@ class BackOffNGram(NGram):
         """
         model = len(tokens)
         assert model != 0
-        # The model is in the previus index
-        thesetoks = dict()
         thesetoks = self.my_A[model]
+
         return thesetoks[tokens]
 
     def alpha(self, tokens):
@@ -665,7 +663,6 @@ class BackOffNGram(NGram):
             if perplex < minperplex:
                 bestbeta = beta
                 minperplex = perplex
-        print("The Best beta is:", bestbeta)
         self.beta = bestbeta
 
     def cond_prob(self, token, prev_tokens=None):
@@ -679,7 +676,7 @@ class BackOffNGram(NGram):
         """
         n = self.n
         models = self.models
-
+        # Use the unigram model
         if not prev_tokens:
             return self.models[0].cond_prob(token)
 
@@ -693,9 +690,9 @@ class BackOffNGram(NGram):
             count = self.count(prev_tok)
             prob = discount / count
         else:
-            denom = self.denom(prev_tok)
-            alpha = self.alpha(prev_tok)
-            prob = alpha * (self.cond_prob(token,
-                            list(prev_tokens[1:])) / denom)
-
+            prob = self.cond_prob(token,list(prev_tokens[1:]))
+            if prob != 0:
+                denom = self.denom(prev_tok)
+                alpha = self.alpha(prev_tok)
+                prob = alpha * prob / denom
         return prob

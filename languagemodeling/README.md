@@ -284,3 +284,67 @@ Pude observar que este modelo es mucho mejor que los anteriores implementados.
 La perplejidad baja considerablemente a medida que los valores de n aumentan.
 Estimo que si el cálculo del gamma es más fino (como se menciona más arriba),
 la perplejidad va a tener un aún mejor comportamiento.
+
+
+## Eercicio 7
+
+En este ejercicio implementamos el suavizado por back-off con discounting.
+Para ello, se pidió que implementemos una clase BackOffNGram. Esta clase
+decidí que herede de NGram.
+
+Para calcular la probabilidad condicional de este método usé la fórmula que
+está en el resumen hecho por Franco Luque y algunas ideas que saqué de los
+apuntes de Collins.
+
+Veamos algunos detalles de los métodos:
+
+
+### **__init__**
+
+La observación y la decisión de mantener los n-1 modelos en memoria es la
+misma que la descripta en el ejercicio 6.
+
+También decidí setear todos los conjuntos correspondientes del método A() y
+mantenerlos en memoria.
+Realizar esto es algo costoso, pero como se usa muchas veces conviene hacerlo
+por eficiencia. Se setea en el método **_set_A()**.
+Finalmente, en el caso correspondiente, estimo el valor de **beta** usando el heldout.
+
+
+### _set_A
+
+Siendo **A(v) = {w : c(v, w) > 0}**
+Para setear los A() lo que hice fué implementar un algoritmo que crea una lista de diccionarios cuyas keys son las **v** y los values son las **w**.
+
+Para hacer esto, se arma una lista de todas las keys existentes en los counts de cada modelo. Luego, a partir de cada una de estas generamos el v y el w. Que sean keys en counts nos asegura que tenemos TODAS las v y w posibles. Es decir que si algún token no aparece en las keys de alguno de los diccionarios es porque efectivamente c(v,w) = 0.
+
+
+### **count**
+
+Este método es similar al resto de los counts implementados para otras clases, solo que en este caso vamos a contemplar la parición the tokens del tipo ``` k * ('<s>',)```
+
+
+### **_disc_count**
+Éste método simplemente implementa el descuento del parámetro **beta** al valor de count.
+
+
+### **A**
+Dado que precalculamos todos los sets posibles, este método sólo se tendrá que encargar de buscar en la lista correspondiente de self.my_A, la key correspondiente.
+Notar que debe tener en cuenta el caso de que no el tokens no sea ninguna key, en tal caso, como mencionamos anteriormente, el set correspondiente es ```{}```
+
+
+### **alpha**
+Implementa la fórmula que está en las notas de Franco.
+
+
+### **denom**
+Implementa la formula que está en las notas de Franco. Utilicé la que usa la cond_prob porque la que usa el cociente no pasa los tests (no es igual por décimas).
+
+
+### **_set_beta**
+Es similar al método que estima gamma en el ejercicio anterior. Cambia el step y el
+máximo a utilzar.
+
+
+### **cond_prob**
+Se implementa la formula de la probabilidad condicional dada en las notas de Franco.

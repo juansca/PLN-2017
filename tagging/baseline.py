@@ -8,7 +8,24 @@ class BaselineTagger:
         :param tagged_sents:training sentences, each one being a list of pairs.
         :type tagged_sents: list of list of tuples (word, tag)
         """
-        pass
+        word_tags = dict()
+        self.word_tags = word_tags
+
+        for sent in tagged_sents:
+            for word_tagged in sent:
+                word = word_tagged[0]
+                tag = word_tagged[1]
+
+                if word in word_tags:
+                    word_tags[word][tag] += 1
+                else:
+                    word_tags[word] = defaultdict(int)
+                    word_tags[word][tag] += 1
+
+        for word in word_tags:
+            word_tags[word] = word_tags[word].items()
+            word_tags[word] = sorted(word_tags[word], key=lambda x: x[1],
+                                     reverse=True)
 
     def tag(self, sent):
         """Tag a sentence.

@@ -9,6 +9,8 @@ Options:
 """
 from docopt import docopt
 from collections import defaultdict
+from tabulate import tabulate
+
 from corpus.ancora import SimpleAncoraCorpusReader
 
 
@@ -54,6 +56,7 @@ if __name__ == '__main__':
 
     ten_frequent_tags = tags_count_list[:10]
     # Print the table with the information about the tags
+    table = []
     for i in range(10):
         tag_tuple = ten_frequent_tags[i]
         percent = (tag_tuple[1] / total_tags) * 100
@@ -65,6 +68,7 @@ if __name__ == '__main__':
                                 reverse=True)
         five_words = words_with_tag[:5]
 
-        print(i, "th -->", tag,
-              "\tFrequency:", tag_tuple[1], "Percent:", percent,
-              "\tWords most frequent:", five_words)
+        info_lst = [i, tag, tag_tuple[1], percent, five_words]
+        table.append(info_lst)
+    header = ["Order" , "Tag", "Frequency", "Percent", "Words most frequent"]
+    print(tabulate(header, table))

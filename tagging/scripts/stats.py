@@ -38,3 +38,6 @@ if __name__ == '__main__':
                 tag_to_words[tag].add(word)
             else:
                 tag_to_words[tag] = {word}
+
+    words_vocab_len = len(count_words.keys())
+    tags_vocab_len = len(count_tags.keys())

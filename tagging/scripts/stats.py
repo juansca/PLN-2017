@@ -42,6 +42,11 @@ if __name__ == '__main__':
     words_vocab_len = len(count_words.keys())
     tags_vocab_len = len(count_tags.keys())
 
+    print("Cantidad de palabras:", words_vocab_len,
+          "\nCantidad de etiquetas:", tags_vocab_len,
+          "\nCantidad de oraciones", count_sents,
+          "\nCantidad de ocurrencias de palabras", count_words)
+
     # Extracting the ten most frequent tags
     tags_count_list = count_tags.items()
     tags_count_list = sorted(tags_count_list, key=lambda x: x[1], reverse=True)

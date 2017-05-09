@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     # load the data
     files = '3LB-CAST/.*\.tbf\.xml'
-    corpus = SimpleAncoraCorpusReader('ancora/ancora-3.0.1es/', files)
+    corpus = SimpleAncoraCorpusReader('ancora/', files)
     sents = list(corpus.tagged_sents())
 
     # tag
@@ -50,11 +50,33 @@ if __name__ == '__main__':
         hits_sent = [m == g for m, g in zip(model_tag_sent, gold_tag_sent)]
         hits += sum(hits_sent)
         total += len(sent)
-        acc = float(hits) / total
+        total_acc = float(hits) / total
 
-        progress('{:3.1f}% ({:2.2f}%)'.format(float(i) * 100 / n, acc * 100))
+        # Known and unknown score
+        hits_known, hits_uknown = 0, 0
+        total_known, total_unknown = 0, 0
+        for m, g in zip(model_tag_sent, gold_tag_sent):
+            # Unknown word
+            if g == 'nc0s000':
+                # Hit
+                if m == g:
+                    hits_uknown += 1
+                total_unknown += 1
+            # Known word
+            else:
+                # Hit
+                if m == g:
+                    hits_known += 1
+                total_known += 1
 
-    acc = float(hits) / total
+        progress('{:3.1f}% (Total: {:2.2f}%)'.format(float(i) * 100 / n,
+                                                     total_acc * 100))
+    # Compute accuracy
+    total_acc = float(hits) / total
+    known_acc = float(hits_known) / total_known
+    unknown_acc = float(hits_uknown) / total_unknown
 
     print('')
-    print('Accuracy: {:2.2f}%'.format(acc * 100))
+    print('Total accuracy: {:2.2f}%'.format(total_acc * 100))
+    print('Known accuracy: {:2.2f}%'.format(known_acc * 100))
+    print('Unknown accuracy: {:2.2f}%'.format(unknown_acc * 100))

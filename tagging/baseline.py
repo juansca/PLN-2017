@@ -24,8 +24,13 @@ class BaselineTagger:
         :param w: the word.
         :type w: str
         """
-        pass
-        
+        if not self.unknown(w):
+            tag = self.word_tags[w][0][0]
+        else:
+            tag = 'nc0s000'
+
+        return tag
+
     def unknown(self, w):
         """Check if a word is unknown for the model.
 

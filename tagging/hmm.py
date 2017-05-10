@@ -70,9 +70,17 @@ class HMM:
         Joint probability of a sentence and its tagging.
         Warning: subject to underflow problems.
 
-        x -- sentence.
-        y -- tagging.
+        :param x: sentence.
+        :param y: tagging.
         """
+        prob = self.tag_prob(y)
+
+        for word, tag in zip(x, y):
+            prob *= self.out_prob(word, tag)
+            if prob == 0:
+                break
+
+        return prob
 
     def tag_log_prob(self, y):
         """

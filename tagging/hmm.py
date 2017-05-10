@@ -35,9 +35,15 @@ class HMM:
     def out_prob(self, word, tag):
         """Probability of a word given a tag.
 
-        word -- the word.
-        tag -- the tag.
+        :param word: the word.
+        :param tag: the tag.
         """
+        prob = 0.0
+        out = self.out
+        if tag in out:
+            prob = out[tag].get(word, 0)
+
+        return prob
 
     def tag_prob(self, y):
         """

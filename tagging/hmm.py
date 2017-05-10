@@ -12,18 +12,25 @@ class HMM:
         self.trans = trans
         self.out = out
         self.tagger = ViterbiTagger(self)
-        
 
     def tagset(self):
-        """Returns the set of tags.
-        """
+        """Returns the set of tags."""
+        return self.tagset
 
     def trans_prob(self, tag, prev_tags):
         """Probability of a tag.
 
-        tag -- the tag.
-        prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
+        :param tag: the tag.
+        :param prev_tags: tuple with the previous n-1 tags (optional only
+                          if n = 1).
         """
+        prob = 0.0
+        trans = self.trans
+
+        if prev_tags in trans:
+            prob = trans.get(tag, 0)
+
+        return prob
 
     def out_prob(self, word, tag):
         """Probability of a word given a tag.

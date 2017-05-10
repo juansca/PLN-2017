@@ -50,8 +50,20 @@ class HMM:
         Probability of a tagging.
         Warning: subject to underflow problems.
 
-        y -- tagging.
+        param y: tagging.
         """
+        n = self.n
+        complete_y = ['<s>'] * (n-1) + y + ['<\s>']
+        prob = 1
+
+        for i in range(len(complete_y) - (n - 1)):
+            prev_tags = tuple(complete_y[i: i + (n-1)])
+            tag = complete_y[i + (n-1)]
+            prob *= self.trans_prob(tag, prev_tags)
+            if prob == 0:
+                break
+
+        return prob
 
     def prob(self, x, y):
         """

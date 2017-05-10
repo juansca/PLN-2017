@@ -133,6 +133,9 @@ class HMM:
 
         sent -- the sentence.
         """
+        tagger = self.tagger
+
+        return tagger.tag(sent)
 
 
 class ViterbiTagger:

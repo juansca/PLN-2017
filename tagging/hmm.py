@@ -1,7 +1,7 @@
 from math import log2
 
 
-class HMM:
+class HMM(object):
 
     def __init__(self, n, tagset, trans, out):
         """
@@ -31,8 +31,7 @@ class HMM:
         trans = self.trans
 
         if prev_tags in trans:
-            prob = trans.get(tag, 0)
-
+            prob = trans[prev_tags].get(tag, 0)
         return prob
 
     def out_prob(self, word, tag):
@@ -56,13 +55,14 @@ class HMM:
         param y: tagging.
         """
         n = self.n
-        complete_y = ['<s>'] * (n-1) + y + ['<\s>']
+        complete_y = ['<s>'] * (n-1) + y + ['</s>']
         prob = 1
 
         for i in range(len(complete_y) - (n - 1)):
             prev_tags = tuple(complete_y[i: i + (n-1)])
             tag = complete_y[i + (n-1)]
             prob *= self.trans_prob(tag, prev_tags)
+
             if prob == 0:
                 break
 
@@ -85,7 +85,7 @@ class HMM:
 
         return prob
 
-    def _log2(x):
+    def _log2(self, x):
         """Math base 2 log extended to compute log2(0)"""
         if x == 0:
             return float('-inf')
@@ -100,7 +100,7 @@ class HMM:
         """
 
         n = self.n
-        complete_y = ['<s>'] * (n-1) + y + ['<\s>']
+        complete_y = ['<s>'] * (n-1) + y + ['</s>']
         prob = 0
 
         for i in range(len(complete_y) - (n - 1)):
@@ -122,7 +122,7 @@ class HMM:
         prob = self.tag_log_prob(y)
 
         for word, tag in zip(x, y):
-            prob += self._log(self.out_prob(word, tag))
+            prob += self._log2(self.out_prob(word, tag))
             if prob == float('-inf'):
                 break
 
@@ -138,7 +138,7 @@ class HMM:
         return tagger.tag(sent)
 
 
-class ViterbiTagger:
+class ViterbiTagger(object):
 
     def __init__(self, hmm):
         """

@@ -1,3 +1,6 @@
+from math import log2
+
+
 class HMM:
 
     def __init__(self, n, tagset, trans, out):
@@ -82,12 +85,32 @@ class HMM:
 
         return prob
 
+    def _log2(x):
+        """Math base 2 log extended to compute log2(0)"""
+        if x == 0:
+            return float('-inf')
+        else:
+            return log2(x)
+
     def tag_log_prob(self, y):
         """
         Log-probability of a tagging.
 
         y -- tagging.
         """
+
+        n = self.n
+        complete_y = ['<s>'] * (n-1) + y + ['<\s>']
+        prob = 0
+
+        for i in range(len(complete_y) - (n - 1)):
+            prev_tags = tuple(complete_y[i: i + (n-1)])
+            tag = complete_y[i + (n-1)]
+            prob += self._log2(self.trans_prob(tag, prev_tags))
+            if prob == float('-inf'):
+                break
+
+        return prob
 
     def log_prob(self, x, y):
         """
@@ -96,6 +119,14 @@ class HMM:
         x -- sentence.
         y -- tagging.
         """
+        prob = self.tag_log_prob(y)
+
+        for word, tag in zip(x, y):
+            prob += self._log(self.out_prob(word, tag))
+            if prob == float('-inf'):
+                break
+
+        return prob
 
     def tag(self, sent):
         """Returns the most probable tagging for a sentence.

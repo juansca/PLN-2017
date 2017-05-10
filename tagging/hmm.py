@@ -2,11 +2,17 @@ class HMM:
 
     def __init__(self, n, tagset, trans, out):
         """
-        n -- n-gram size.
-        tagset -- set of tags.
-        trans -- transition probabilities dictionary.
-        out -- output probabilities dictionary.
+        :param n: n-gram size.
+        :param tagset: set of tags.
+        :param trans: transition probabilities dictionary.
+        :param out: output probabilities dictionary.
         """
+        self.n = n
+        self.tagset = tagset
+        self.trans = trans
+        self.out = out
+        self.tagger = ViterbiTagger(self)
+        
 
     def tagset(self):
         """Returns the set of tags.

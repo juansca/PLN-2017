@@ -1,4 +1,13 @@
+from collections import defaultdict
 from math import log2
+
+
+def _log2(x):
+    """Math base 2 log extended to compute log2(0)"""
+    if x == 0:
+        return float('-inf')
+    else:
+        return log2(x)
 
 
 class HMM(object):
@@ -85,18 +94,11 @@ class HMM(object):
 
         return prob
 
-    def _log2(self, x):
-        """Math base 2 log extended to compute log2(0)"""
-        if x == 0:
-            return float('-inf')
-        else:
-            return log2(x)
-
     def tag_log_prob(self, y):
         """
         Log-probability of a tagging.
 
-        y -- tagging.
+        :param y: tagging.
         """
 
         n = self.n
@@ -104,9 +106,10 @@ class HMM(object):
         prob = 0
 
         for i in range(len(complete_y) - (n - 1)):
+
             prev_tags = tuple(complete_y[i: i + (n-1)])
             tag = complete_y[i + (n-1)]
-            prob += self._log2(self.trans_prob(tag, prev_tags))
+            prob += _log2(self.trans_prob(tag, prev_tags))
             if prob == float('-inf'):
                 break
 
@@ -116,13 +119,13 @@ class HMM(object):
         """
         Joint log-probability of a sentence and its tagging.
 
-        x -- sentence.
-        y -- tagging.
+        :param x: sentence.
+        :param y: tagging.
         """
         prob = self.tag_log_prob(y)
 
         for word, tag in zip(x, y):
-            prob += self._log2(self.out_prob(word, tag))
+            prob += _log2(self.out_prob(word, tag))
             if prob == float('-inf'):
                 break
 
@@ -131,8 +134,9 @@ class HMM(object):
     def tag(self, sent):
         """Returns the most probable tagging for a sentence.
 
-        sent -- the sentence.
+        :param sent: the sentence.
         """
+        # Just tag with ViterbiTagger
         tagger = self.tagger
 
         return tagger.tag(sent)
@@ -142,11 +146,18 @@ class ViterbiTagger(object):
 
     def __init__(self, hmm):
         """
-        hmm -- the HMM.
+        :param hmm: the HMM.
         """
+        self.model = hmm
+        self.n = self.model.n
+        self.tagset = self.model.tagset
+
+        pi = defaultdict(lambda: defaultdict(tuple))
+        self._pi = pi
+        pi[0][('<s>',) * (self.n-1)] = (0, [])
 
     def tag(self, sent):
         """Returns the most probable tagging for a sentence.
 
-        sent -- the sentence.
+        :param sent: the sentence.
         """

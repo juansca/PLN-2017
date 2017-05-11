@@ -161,3 +161,34 @@ class ViterbiTagger(object):
 
         :param sent: the sentence.
         """
+        pi = self._pi
+        tagset = self.tagset
+        model = self.model
+
+        for k in range(len(sent)):
+            word = sent[k]
+            pi_k = pi[k]
+            pi_k1 = pi[k + 1]
+            for prev_tags in pi_k:
+                for tag in tagset:
+                    # Compute the max
+                    prob = _log2(model.out_prob(word, tag) *
+                                 model.trans_prob(tag, prev_tags))
+                    if prob == float('-inf'):
+                        continue
+                    # Prev tag probability accumulated
+                    prob += pi_k[prev_tags][0]
+                    # Relation between tag and prev_tags
+                    tags = pi_k[prev_tags][1] + [tag]
+
+                    prev_prob = pi_k1.get((prev_tags + (tag,))[1:],
+                                          (float('-inf'),))[0]
+                    # Maximising
+                    if prev_prob < prob:
+                        pi_k1[(prev_tags + (tag,))[1:]] = (prob, tags)
+
+        state = list(pi[max(pi)].values())
+        probs = [key[0] for key in state]
+        self._pi = pi
+        max_prob_index = probs.index(max(probs))
+        return state[max_prob_index][1]

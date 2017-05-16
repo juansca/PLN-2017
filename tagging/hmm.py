@@ -190,14 +190,15 @@ class MLHMM(HMM):
             total = sum(words.values())
             for word, ocurrences in words.items():
                 # Probability that occurs word given tag
-                words[word] = words[word] / total
+                words[word] = ocurrences / total
 
         ngram_list = [ngram for ngram in tcounts if len(ngram) == n]
         for ngram in ngram_list:
             # Probability that occurs (x_1, ..., x_n) given that occurs
             # (x_1, ..., x_(n-1))
-            trans[ngram[:-1]][ngram[:-1]] = tcounts[ngram] / \
+            trans[ngram[:-1]][ngram[-1]] = tcounts[ngram] / \
                                             tcounts[ngram[:-1]]
+
         self.trans = dict(trans)
         self.out = dict(out)
 
@@ -209,12 +210,9 @@ class MLHMM(HMM):
         tokens = tuple(tokens)
         n = self.n
         toklen = len(tokens)
-        print(tokens, toklen, n)
         if toklen == 0:
             toklen = 1
 
-        print(tokens)
-        print(self.tcounts)
         assert (toklen == n) | (toklen == (n-1))
 
         count = self.tcounts[tokens]

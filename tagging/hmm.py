@@ -222,6 +222,23 @@ class MLHMM(HMM):
         """
         return w not in self.word_vocabulary
 
+    def trans_prob(self, tag, prev_tags):
+        """Probability of a tag.
+
+        :param tag: the tag.
+        :param prev_tags: tuple with the previous n-1 tags (optional only
+                          if n = 1).
+        """
+        pass
+
+    def out_prob(self, word, tag):
+        """Probability of a word given a tag.
+
+        :param word: the word.
+        :param tag: the tag.
+        """
+        pass
+
 
 class ViterbiTagger(object):
 

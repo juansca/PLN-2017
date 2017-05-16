@@ -156,11 +156,13 @@ class MLHMM(HMM):
         word_vocabulary = set()
         tagset = set()
 
-        self.trans = trans
         self.tcounts = tcounts
+        self.trans = trans
         self.n = n
         self.addone = addone
         self.out = out
+
+        init_tag = ['<s>'] * (n-1)
 
         for sent in tagged_sents:
             # Build word_vocabulary and tagset
@@ -169,9 +171,9 @@ class MLHMM(HMM):
             sent_tags = [word_tagged[1] for word_tagged in sent]
             word_vocabulary.union(sent_words)
             tagset.union(sent_tags)
-            words = ['<s>'] * (n-1) + sent_words + ['</s>']
-            tags = ['<s>'] * (n-1) + sent_tags + ['</s>']
-            for i in range(len(tags) - (n + 1)):
+            words = init_tag + sent_words + ['</s>']
+            tags = init_tag + sent_tags + ['</s>']
+            for i in range(len(tags) - n + 1):
                 act_word_tag = i + (n-1)
                 out[tags[act_word_tag]][words[act_word_tag]] += 1
                 ngram = tuple(tags[i:(i+n)])
@@ -207,10 +209,13 @@ class MLHMM(HMM):
         tokens = tuple(tokens)
         n = self.n
         toklen = len(tokens)
+        print(tokens, toklen, n)
         if toklen == 0:
             toklen = 1
 
-        assert toklen == n or toklen == (n-1)
+        print(tokens)
+        print(self.tcounts)
+        assert (toklen == n) | (toklen == (n-1))
 
         count = self.tcounts[tokens]
         return count
@@ -229,7 +234,19 @@ class MLHMM(HMM):
         :param prev_tags: tuple with the previous n-1 tags (optional only
                           if n = 1).
         """
-        pass
+        addone = self.addone
+        trans = self.trans
+        if addone:
+            tag_count = self.tcount(prev_tags + (tag,)) + 1
+            denom = self.tcount(prev_tags) + len(self.tagset) + 1
+            prob = tag_count / denom
+        else:
+            if prev_tags in trans:
+                tag_trans = trans[prev_tags]
+                prob = tag_trans.get(tag, 0)
+            else:
+                prob = 0
+        return prob
 
     def out_prob(self, word, tag):
         """Probability of a word given a tag.
@@ -237,7 +254,16 @@ class MLHMM(HMM):
         :param word: the word.
         :param tag: the tag.
         """
-        pass
+        addone = self.addone
+        out = self.out
+        if tag in out:
+            tag_trans = out[tag]
+            prob = tag_trans.get(tag, 0)
+        else:
+            prob = 0
+        if addone and self.unknown(word):
+            prob = 1 / len(self.word_vocabulary)
+        return prob
 
 
 class ViterbiTagger(object):

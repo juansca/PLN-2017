@@ -157,7 +157,16 @@ class MLHMM(HMM):
 
         tokens -- the n-gram or (n-1)-gram tuple of tags.
         """
-        pass
+        tokens = tuple(tokens)
+        n = self.n
+        toklen = len(tokens)
+        if toklen == 0:
+            toklen = 1
+
+        assert toklen == n or toklen == (n-1)
+
+        count = self.tcounts[tokens]
+        return count
 
     def unknown(self, w):
         """Check if a word is unknown for the model.

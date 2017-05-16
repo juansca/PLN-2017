@@ -255,8 +255,8 @@ class MLHMM(HMM):
         addone = self.addone
         out = self.out
         if tag in out:
-            tag_trans = out[tag]
-            prob = tag_trans.get(tag, 0)
+            tag_out = out[tag]
+            prob = tag_out.get(word, 0)
         else:
             prob = 0
         if addone and self.unknown(word):

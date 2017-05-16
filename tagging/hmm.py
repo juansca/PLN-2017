@@ -150,12 +150,43 @@ class MLHMM(HMM):
         :param tagged_sents: training sentences, each one being a list of pairs
         :param addone: whether to use addone smoothing (default: True).
         """
-        pass
+        tcounts = defaultdict(int)
+        trans = defaultdict(lambda: defaultdict(int))
+        out = defaultdict(lambda: defaultdict(int))
+        word_vocabulary = set()
+        tagset = set()
+
+        self.trans = trans
+        self.tcounts = tcounts
+        self.n = n
+        self.addone = addone
+        self.out = out
+
+        for sent in tagged_sents:
+            # Build word_vocabulary and tagset
+            # On each sent process the (word, tag) element
+            sent_words = [word_tagged[0] for word_tagged in sent]
+            sent_tags = [word_tagged[1] for word_tagged in sent]
+            word_vocabulary.union(sent_words)
+            tagset.union(sent_tags)
+            words = ['<s>'] * (n-1) + sent_words + ['</s>']
+            tags = ['<s>'] * (n-1) + sent_tags + ['</s>']
+            for i in range(len(tags) - (n + 1)):
+                act_word_tag = i + (n-1)
+                out[tags[act_word_tag]][words[act_word_tag]] += 1
+                ngram = tuple(tags[i:(i+n)])
+                tcounts[ngram] += 1
+                tcounts[ngram[:-1]] += 1
+
+        self.word_vocabulary = set(word_vocabulary)
+        self.tagset = set(tagset)
+        if '</s>' in out:
+            del out['</s>']
 
     def tcount(self, tokens):
         """Count for an n-gram or (n-1)-gram of tags.
 
-        tokens -- the n-gram or (n-1)-gram tuple of tags.
+        :param tokens: the n-gram or (n-1)-gram tuple of tags.
         """
         tokens = tuple(tokens)
         n = self.n

@@ -183,6 +183,22 @@ class MLHMM(HMM):
         if '</s>' in out:
             del out['</s>']
 
+        # Compute probabilities
+        for tag, words in out.items():
+            total = sum(words.values())
+            for word, ocurrences in words.items():
+                # Probability that occurs word given tag
+                words[word] = words[word] / total
+
+        ngram_list = [ngram for ngram in tcounts if len(ngram) == n]
+        for ngram in ngram_list:
+            # Probability that occurs (x_1, ..., x_n) given that occurs
+            # (x_1, ..., x_(n-1))
+            trans[ngram[:-1]][ngram[:-1]] = tcounts[ngram] / \
+                                            tcounts[ngram[:-1]]
+        self.trans = dict(trans)
+        self.out = dict(out)
+
     def tcount(self, tokens):
         """Count for an n-gram or (n-1)-gram of tags.
 

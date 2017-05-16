@@ -169,7 +169,7 @@ class MLHMM(HMM):
             # On each sent process the (word, tag) element
             sent_words = [word_tagged[0] for word_tagged in sent]
             sent_tags = [word_tagged[1] for word_tagged in sent]
-            word_vocabulary.union(sent_words)
+            word_vocabulary = word_vocabulary.union(sent_words)
             tagset.union(sent_tags)
             words = init_tag + sent_words + ['</s>']
             tags = init_tag + sent_tags + ['</s>']

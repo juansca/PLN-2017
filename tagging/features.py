@@ -56,7 +56,7 @@ class NPrevTags(Feature):
 
         :param n: number of previous tags to consider.
         """
-        pass
+        self.n = n
 
     def _evaluate(self, h):
         """
@@ -64,7 +64,9 @@ class NPrevTags(Feature):
 
         :param h: a history.
         """
-        pass
+        n = self.n
+        prevs = prev_tags(h)
+        return prevs[-n:]
 
 
 class PrevWord(Feature):

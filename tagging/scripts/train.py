@@ -8,8 +8,9 @@ Options:
   -n <order>    Order of the model trained
   -m <model>    Model to use [default: base]:
                   base: Baseline
-                  hmm:
-                  mlhmm:
+                  hmm: Hidden Markov Model
+                  mlhmm: Maximum Likelihood Hidden Markov Model
+                  memm: Maximum Entropy Markov Models
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
@@ -19,12 +20,13 @@ import pickle
 from corpus.ancora import SimpleAncoraCorpusReader
 from tagging.baseline import BaselineTagger
 from tagging.hmm import HMM, MLHMM
-
+from tagging.mem import MEMM
 
 models = {
     'base': BaselineTagger,
     'hmm': HMM,
     'mlhmm': MLHMM,
+    'memm': MEMM,
 }
 
 
@@ -39,7 +41,7 @@ if __name__ == '__main__':
     # train the model
     n = int(opts['-n'])
     m = opts['-m']
-    if m == 'mlhmm':
+    if m == 'mlhmm' or m == 'memm':
         print("Model", m, "Training with n =", n)
         model = models[m](n, sents)
     else:

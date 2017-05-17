@@ -23,7 +23,6 @@ class HMM(object):
         self.tagset = tagset
         self.trans = trans
         self.out = out
-        self.tagger = ViterbiTagger(self)
 
     def tagset(self):
         """Returns the set of tags."""
@@ -137,7 +136,8 @@ class HMM(object):
         :param sent: the sentence.
         """
         # Just tag with ViterbiTagger
-        tagger = self.tagger
+        tagger = ViterbiTagger(self)
+        self.tagger = tagger
 
         return tagger.tag(sent)
 

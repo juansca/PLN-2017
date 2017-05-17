@@ -24,7 +24,8 @@ def word_istitle(h):
 
     :param h: a history.
     """
-    pass
+    sent, i = h.sent, h.i
+    return sent[i].istitle()
 
 
 def word_isupper(h):
@@ -33,7 +34,8 @@ def word_isupper(h):
 
     :param h: a history.
     """
-    pass
+    sent, i = h.sent, h.i
+    return sent[i].isupper()
 
 
 def word_isdigit(h):
@@ -42,7 +44,8 @@ def word_isdigit(h):
 
     :param h: a history.
     """
-    pass
+    sent, i = h.sent, h.i
+    return sent[i].isnumeric()
 
 
 class NPrevTags(Feature):

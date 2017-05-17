@@ -77,7 +77,7 @@ class PrevWord(Feature):
 
         :param f: the feature.
         """
-        pass
+        self.f = f
 
     def _evaluate(self, h):
         """
@@ -85,4 +85,9 @@ class PrevWord(Feature):
 
         :param h: the history.
         """
-        pass
+        f = self.f
+        res = 'BOS'
+        if h.i != 0:
+            hist = History(h.sent, h.prev_tags, h.i - 1)
+            res = f(hist)
+        return str(res)

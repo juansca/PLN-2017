@@ -12,6 +12,7 @@ from docopt import docopt
 import pickle
 import sys
 from collections import Counter
+from time import time
 
 from corpus.ancora import SimpleAncoraCorpusReader
 
@@ -25,6 +26,7 @@ def progress(msg, width=None):
 
 
 if __name__ == '__main__':
+    start = time()
     opts = docopt(__doc__)
 
     # load the model
@@ -93,8 +95,9 @@ if __name__ == '__main__':
     total_acc = float(hits) / total
     known_acc = float(hits_known) / total_known
     unknown_acc = float(hits_unknown) / total_unknown
-
+    finish = time() - start
     print('')
     print('Total accuracy: {:2.2f}%'.format(total_acc * 100))
     print('Known accuracy: {:2.2f}%'.format(known_acc * 100))
     print('Unknown accuracy: {:2.2f}%'.format(unknown_acc * 100))
+    print('Time running: {:2.2f}seconds'.format(finish))

@@ -4,6 +4,9 @@ from unittest import TestCase
 from tagging.features import History
 from tagging.memm import MEMM
 
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import LinearSVC
+
 
 class TestMEMM(TestCase):
 
@@ -93,7 +96,7 @@ class TestMEMM(TestCase):
         tags = list(model.sents_tags(self.tagged_sents))
         self.assertEqual(tags, 'D N V N P D N V N P'.split())
 
-    def test_tag_history(self):
+    def test_tag_history_LogisticRegression(self):
         models = [MEMM(i, self.tagged_sents) for i in [1, 2, 3]]
 
         result = 'D N V N P'.split()
@@ -103,8 +106,47 @@ class TestMEMM(TestCase):
             for h, r in zip(hs, result):
                 self.assertEqual(model.tag_history(h), r)
 
-    def test_tag(self):
+    def test_tag_LogisticRegression(self):
         models = [MEMM(i, self.tagged_sents) for i in [1, 2, 3]]
+
+        sent = 'el gato come pescado .'.split()
+        result = 'D N V N P'.split()
+
+        for model in models:
+            self.assertEqual(model.tag(sent), result)
+
+    def test_tag_history_LinearSVC(self):
+        models = [MEMM(i, self.tagged_sents, LinearSVC) for i in [1, 2, 3]]
+
+        result = 'D N V N P'.split()
+
+        for model in models:
+            hs = model.sent_histories(self.tagged_sents[0])
+            for h, r in zip(hs, result):
+                self.assertEqual(model.tag_history(h), r)
+
+    def test_tag_LinearSVC(self):
+        models = [MEMM(i, self.tagged_sents, LinearSVC) for i in [1, 2, 3]]
+
+        sent = 'el gato come pescado .'.split()
+        result = 'D N V N P'.split()
+
+        for model in models:
+            self.assertEqual(model.tag(sent), result)
+
+
+    def test_tag_history_MultinomialNB(self):
+        models = [MEMM(i, self.tagged_sents, MultinomialNB) for i in [1, 2, 3]]
+
+        result = 'D N V N P'.split()
+
+        for model in models:
+            hs = model.sent_histories(self.tagged_sents[0])
+            for h, r in zip(hs, result):
+                self.assertEqual(model.tag_history(h), r)
+
+    def test_tag_MultinomialNB(self):
+        models = [MEMM(i, self.tagged_sents, MultinomialNB) for i in [1, 2, 3]]
 
         sent = 'el gato come pescado .'.split()
         result = 'D N V N P'.split()

@@ -1,3 +1,4 @@
+from itertools import chain
 
 
 class MEMM:
@@ -31,7 +32,10 @@ class MEMM:
 
         :param tagged_sents: the corpus (a list of sentences)
         """
-        pass
+        # Take tags from all the tagged sents
+        tags = [self.sent_tags(tagged_sent) for tagged_sent in tagged_sents]
+
+        return chain(*tags)
 
     def sent_tags(self, tagged_sent):
         """

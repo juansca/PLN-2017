@@ -12,7 +12,72 @@ History = namedtuple('History', 'sent prev_tags i')
 def word_lower(h):
     """Feature: current lowercased word.
 
-    h -- a history.
+    :param h: a history.
     """
     sent, i = h.sent, h.i
     return sent[i].lower()
+
+
+def word_istitle(h):
+    """
+    Feature: current word starts with an uppercase letter.
+
+    :param h: a history.
+    """
+    pass
+
+
+def word_isupper(h):
+    """
+    Feature: current word is uppercased.
+
+    :param h: a history.
+    """
+    pass
+
+
+def word_isdigit(h):
+    """
+    Feature: current word is a number.
+
+    :param h: a history.
+    """
+    pass
+
+
+class NPrevTags(Feature):
+
+    def __init__(self, n):
+        """
+        Feature: n previous tags tuple.
+
+        :param n: number of previous tags to consider.
+        """
+        pass
+
+    def _evaluate(self, h):
+        """
+        n previous tags tuple.
+
+        :param h: a history.
+        """
+        pass
+
+
+class PrevWord(Feature):
+
+    def __init__(self, f):
+        """
+        Feature: the feature f applied to the previous word.
+
+        :param f: the feature.
+        """
+        pass
+
+    def _evaluate(self, h):
+        """
+        Apply the feature to the previous word in the history.
+
+        :param h: the history.
+        """
+        pass

@@ -18,7 +18,10 @@ class MEMM:
 
         :param tagged_sents: the corpus (a list of sentences)
         """
-        pass
+        # Take all the sent_histories
+        hist = [self.sent_histories(tagg_sent) for tagg_sent in tagged_sents]
+        # Convert to iterator
+        return chain(*hist)
 
     def sent_histories(self, tagged_sent):
         """

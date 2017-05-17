@@ -170,7 +170,7 @@ class MLHMM(HMM):
             sent_words = [word_tagged[0] for word_tagged in sent]
             sent_tags = [word_tagged[1] for word_tagged in sent]
             word_vocabulary = word_vocabulary.union(sent_words)
-            tagset.union(sent_tags)
+            tagset = tagset.union(sent_tags)
             words = init_tag + sent_words + ['</s>']
             tags = init_tag + sent_tags + ['</s>']
             for i in range(len(tags) - n + 1):
@@ -273,7 +273,6 @@ class ViterbiTagger(object):
         self.model = hmm
         self.n = self.model.n
         self.tagset = self.model.tagset
-
         pi = defaultdict(lambda: defaultdict(tuple))
         self._pi = pi
         pi[0][('<s>',) * (self.n-1)] = (0, [])

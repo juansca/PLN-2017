@@ -83,7 +83,9 @@ class MEMM:
 
         :param h: the history.
         """
-        pass
+        # Just predict with scikit-learn pipeline model
+        predicted_tagging = self.pipeline.predict([h])
+        return predicted_tagging[0]
 
     def unknown(self, w):
         """Check if a word is unknown for the model.

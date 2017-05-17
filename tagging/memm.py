@@ -65,7 +65,18 @@ class MEMM:
 
         :param sent: the sentence.
         """
-        pass
+        n = self.n
+        tagging = []
+        tags = ('<s>',)*(n-1)
+        for i in np.arange(len(sent)):
+            # Create the correspondly history
+            act_history = History(sent, tags, i)
+            # Tag the history
+            act_tag = self.tag_history(act_history)
+            # New tag added
+            tagging.append(act_tag)
+            tags = (tags + (act_tag,))[1:]
+        return tagging
 
     def tag_history(self, h):
         """Tag a history.

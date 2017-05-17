@@ -25,7 +25,7 @@ from sklearn.svm import LinearSVC
 
 from tagging.baseline import BaselineTagger
 from tagging.hmm import HMM, MLHMM
-from tagging.mem import MEMM
+from tagging.memm import MEMM
 
 models = {
     'base': BaselineTagger,

@@ -14,7 +14,7 @@ from tagging.features import word_isdigit
 
 class MEMM:
 
-    def __init__(self, n, tagged_sents):
+    def __init__(self, n, tagged_sents, clasifier=LogisticRegression):
         """
         :param n: order of the model.
         :param tagged_sents: list of sentences, each one being a list of pairs.
@@ -36,10 +36,9 @@ class MEMM:
         prev_words = [PrevWord(feat) for feat in feat_list]
         nprev_tags = [NPrevTags(i) for i in range(1, n)]
         features += prev_words + nprev_tags
-
         # Create sktlearn pipeline
         pipeline = Pipeline([('vect', Vectorizer(features)),
-                            ('clf', LogisticRegression())])
+                            ('clf', clasifier())])
 
         # Fiting the pipeline
         sents_hist = self.sents_histories(tagged_sents)

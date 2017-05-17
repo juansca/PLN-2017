@@ -1,6 +1,15 @@
 import numpy as np
 from itertools import chain
-from tagging.features import History
+from tagging.features import History, PrevWord, NPrevTags
+
+from featureforge.vectorizer import Vectorizer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LogisticRegression
+
+from tagging.features import word_lower
+from tagging.features import word_istitle
+from tagging.features import word_isupper
+from tagging.features import word_isdigit
 
 
 class MEMM:
@@ -10,7 +19,32 @@ class MEMM:
         :param n: order of the model.
         :param tagged_sents: list of sentences, each one being a list of pairs.
         """
-        pass
+        self.init_tags = ('<s>',)*(n-1)
+        self.n = n
+
+        word_vocabulary = {word_tagged[0] for sent in tagged_sents
+                           for word_tagged in sent}
+
+        self.word_vocabulary = word_vocabulary
+
+        # Basic feature list
+        feat_list = [word_lower, word_istitle,
+                     word_isupper, word_isdigit]
+
+        features = feat_list
+        # Add parametric features
+        prev_words = [PrevWord(feat) for feat in feat_list]
+        nprev_tags = [NPrevTags(i) for i in range(1, n)]
+        features += prev_words + nprev_tags
+
+        # Create sktlearn pipeline
+        pipeline = Pipeline([('vect', Vectorizer(features)),
+                            ('clf', LogisticRegression())])
+
+        # Fiting the pipeline
+        sents_hist = self.sents_histories(tagged_sents)
+        sents_tag = self.sents_tags(tagged_sents)
+        self.pipeline = pipeline.fit(X=list(sents_hist), y=list(sents_tag))
 
     def sents_histories(self, tagged_sents):
         """

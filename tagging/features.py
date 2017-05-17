@@ -48,6 +48,15 @@ def word_isdigit(h):
     return sent[i].isnumeric()
 
 
+def prev_tags(h):
+    """
+    Feature: previous tags.
+
+    :param h: a history
+    """
+    return h.prev_tags
+
+
 class NPrevTags(Feature):
 
     def __init__(self, n):

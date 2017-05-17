@@ -1,5 +1,6 @@
 import numpy as np
 from itertools import chain
+from tagging.features import History
 
 
 class MEMM:
@@ -25,7 +26,17 @@ class MEMM:
 
         :param tagged_sent: the tagged sentence (a list of pairs (word, tag)).
         """
-        pass
+        n = self.n
+        initial_tags = self.init_tags
+        # All words tagged in the tagged sent
+        words = [tagged_word[0] for tagged_word in tagged_sent]
+        tags = tuple([tagged_word[1] for tagged_word in tagged_sent])
+        # Add initial tags to tags sent
+        tags = initial_tags + tags
+
+        histories = [History(words, tags[i:i + n - 1], i)
+                     for i in np.arange(len(words))]
+        return iter(histories)
 
     def sents_tags(self, tagged_sents):
         """

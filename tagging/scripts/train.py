@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     # load the data
     files = 'CESS-CAST-(A|AA|P)/.*\.tbf\.xml'
-    corpus = SimpleAncoraCorpusReader('ancora/', files)
+    corpus = SimpleAncoraCorpusReader('corpus/ancora/', files)
     sents = list(corpus.tagged_sents())
 
     # train the model
@@ -68,6 +68,7 @@ if __name__ == '__main__':
 
     # save it
     filename = opts['-o']
+    filename = 'Models/tagging/' + filename
     f = open(filename, 'wb')
     pickle.dump(model, f)
     f.close()

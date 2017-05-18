@@ -56,8 +56,9 @@ def plot_confusion_matrix(cm, classes, filename="cnf_matrix.png",
     plt.tight_layout()
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
-
-    plt.savefig(filename)
+    filename = filename.split('/')
+    new_filename = filename[0] + '/' + filename[1] + '/Matrices/' + filename[2]
+    plt.savefig(new_filename)
 
 
 if __name__ == '__main__':
@@ -66,13 +67,14 @@ if __name__ == '__main__':
 
     # load the model
     filename = opts['-i']
+    filename = 'Models/tagging/' + filename
     f = open(filename, 'rb')
     model = pickle.load(f)
     f.close()
 
     # load the data
     files = '3LB-CAST/.*\.tbf\.xml'
-    corpus = SimpleAncoraCorpusReader('ancora/', files)
+    corpus = SimpleAncoraCorpusReader('corpus/ancora/', files)
     sents = list(corpus.tagged_sents())
     n = len(sents)
 

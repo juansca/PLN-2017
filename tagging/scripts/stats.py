@@ -18,12 +18,12 @@ if __name__ == '__main__':
     opts = docopt(__doc__)
 
     # load the data
-    corpus = SimpleAncoraCorpusReader('ancora/')
+    corpus = SimpleAncoraCorpusReader('corpus/ancora/')
     sents = list(corpus.tagged_sents())
 
     # compute the statistics
     count_sents = len(sents)
-    words_tags_counter = defaultdict(lambda: defaultdict(int))
+    words_tags_counter = defaultdict(set)
     tag_to_words = defaultdict(set)
     words = defaultdict(int)
     count_tags = defaultdict(int)
@@ -36,9 +36,10 @@ if __name__ == '__main__':
             words[word] += 1
             # The same tag appear
             count_tags[tag] += 1
+            # Used for ambiguity
             # Relation between tag and word
             tag_to_words[tag].add(word)
-            words_tags_counter[word][tag] += 1
+            words_tags_counter[word].add(tag)
 
     count_words = sum(words.values())
     words_vocab_len = len(words)
@@ -74,4 +75,36 @@ if __name__ == '__main__':
         table['Percent'].append(percent)
         table['WsMFreq'].append(five_words)
 
+    print(tabulate(table, headers="keys"))
+
+    # Ambiguety
+    words_ambiguety = words_tags_counter.items()
+    # Generate list of tuples (word, level)
+    words_ambiguety = [(word, len(tags)) for word, tags in words_ambiguety]
+    words_ambiguety.sort(key=lambda word: word[1])
+
+    ambiguety = defaultdict(set)
+    level = 1
+    for word in words_ambiguety:
+        if level == 9:
+            break
+        word_level = word[1]
+        if level == word_level:
+            ambiguety[level].add(word[0])
+        else:
+            level += 1
+
+    # Print the table with ambiguety information
+    table = defaultdict(list)
+    for i in range(1, 10):
+        table['Level'].append(i)
+        table['Words count'].append(len(ambiguety[i]))
+        table['Total percent'].append(len(ambiguety[i]) / words_vocab_len)
+        freq_words = list(ambiguety[i])
+        freq_words = [(word, words[word]) for word in freq_words]
+        freq_words.sort(key=lambda word: word[1], reverse=True)
+        five_freq_words = [word[0] for word in freq_words]
+        table['WsMFreq'].append(five_freq_words[:5])
+    print("\n")
+    print("\n")
     print(tabulate(table, headers="keys"))

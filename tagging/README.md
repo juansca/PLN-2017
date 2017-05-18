@@ -226,3 +226,81 @@ Historiy. Se usa la definición de la misma
 lugar de la actual.
 
 Todos estos features se implementaron en el archivo ```feature.py```
+
+
+
+## Ejercicio 7: Maximum Entropy Markov Models
+
+En este ejercicio se implementó un MEMM con el siguiente pipeline de scikit-learn:
+
+    - Vectorizador (featureforge.vectorizer.Vectorizer) con los features definidos en el ejercicio anterior.
+    - Clasificador de máxima entropía (sklearn.linear_model.LogisticRegression).
+También, se implementó un algoritmo de tagging en el método tag usando beam
+inference con un beam de tamaño 1.
+
+Se usaron algunos métodos de numpy para intentar lograr mayor eficiencia, con
+más conocimiento de la herramienta se podría mejorar aún más.
+La implementación de los distintos métodos, en general, no tiene complejidades.
+Excepto, quizás, en __init__  que se realiza la creación y el fitting del Pipeline.
+Pero que tampoco tiene mayores complejidades.
+
+
+
+### **Reporte de Resultados**
+
+
+
+```
+                        LogisticRegression
+  N            1               2               3               4
+
+Total        91.11%          90.71%          90.89%         90.88%
+Known        94.56%          94.17%          94.25%         94.24%
+Unknown      59.82%          59.31%          60.37%         60.42%
+Time        00:37.22m       00:42.07m       00:43.01m      00:42.21m
+```
+
+
+
+```
+                            LinearSVC
+  N            1               2               3               4
+
+Total       93.60%           93.57%          93.69%         93.70%
+Known       97.12%           97.05%          97.11%         97.14%
+Unknown     61.74%           62.00%          62.72%         62.53%
+Time       00:35.80m        00:41.81m       00:41.72m      00:41.45m
+```
+
+
+
+```
+                            MultinomialNB
+  N            1               2               3               4
+
+Total       77.04%           71.27%          66.39%         63.54%
+Known       81.48%           75.49%          70.22%         66.93%
+Unknown     36.74%           33.01%          31.67%         32.81%
+Time       82:03.05m        82:23.39m       81:54.44m      82:20.35m
+```
+
+Por un lado, es importante observar que la elección del clasificador es fundamental
+a la hora de obtener buenos resultados. Ya que si analizamos las tablas anteriores,
+notamos que existe una gran diferencia entre MultinomialNB y los otros dos
+clasificadores. Éste tiene un muy mal desempeño en tiempo y es el peor en términos
+de la accuracy (incluso peor que HMM).
+Por otro lado, si tenemos en cuenta los "buenos clasificadores", podemos decir
+que MEMM funciona muy bien en terminos tanto de tiempo como the accuracy.
+Pués, si observamos las accuracies:
+- Totales están en un rango entre 91% y 94%
+- Palabras conocidas entre 94% y 97%
+- Palabras desconocidas entre 59% y 63%
+
+Cabe destacar, que si analizamos el MEMM con un clasificador LinearSVC es el mejor
+entre testeados.
+
+Finalmente, podemos decir que MEMM es bastante superior que HMM. (usando buenos
+clasificadores para MEMM) Esto teniendo en cuenta el desempeño en tiempo también.
+
+
+### **Matrices de Convolución**

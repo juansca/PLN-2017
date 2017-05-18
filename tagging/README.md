@@ -160,3 +160,42 @@ etiquetado más probable de una oración.
 
 Para ello, se implementaron las clases ```HMM``` y ```ViterbiTagger``` respetando
 la interfaz propuesta por la cátedra.
+
+
+
+## Ejercicio 5: HMM POS Tagger
+
+En este ejercicio se pide implementar en una clase MLHMM un Hidden Markov Model
+cuyos parámetros se estiman usando **Maximum Likelihood** sobre un corpus de oraciones
+etiquetado. La interfaz de la clase se corresponde con la propuesta por la
+cátedra.
+
+Para mejorar la eficiencia se cachean las probabilidades de que dado un tag ocurra
+una palabra y las probabilidades de que ocurra el ngrama (x_1, ..., x_n) dado que
+ocurrió (x_1, ..., x_(n-1)).
+
+Se agregó la opción por linea de comando para entrenar un modelo MLHMM con distintos
+valores de **n**. También se agrega para HMM (del ejercicio anterior).
+
+### **Reporte de Resultados**
+
+
+```
+Accu / N        1               2               3               4
+
+Total         85.86%        91.35%           91.87%          91.58%
+Known         95.28%        97.64%           97.65%          97.30%
+Unknown       0.45%         34.32%           39.46%          39.81%
+Time         00:23.29m     5:40.66m         28:43:30m
+```
+NOTA: Para medir el tiempo, en todos los casos, se eliminó la funcionalidad de
+la construcción de la matriz de confusión.
+
+Estos resultados nos indican que el modelo es bastante bueno para el POS tagging.
+En general, el accuracy es muy bueno al etiquetar. Excepto para n=1, pero esto
+es debido al comportamiento de out_prob. Pero, más allá de eso se observa que
+tiene un desempeño aceptable.
+Desde el punto de vista del tiempo, también tiene un desempeño aceptable ya que
+para **n=2** tiene un excelente accuracy total y de palabras conocidas y sólo tarda
+5:40 minutos. A medida que crece el **n** desmejora considerablemente el rendimiento
+en tiempo.

@@ -146,3 +146,17 @@ Time          2.22s
 ```
 
         PONER MATRIZ DE CONFUSIÓN
+
+
+
+## Ejercicio 4: Hidden Markov Models y Algoritmo de Viterbi
+
+En este ejercicio se pidió implementar un
+[Hidden Markov Model](https://en.wikipedia.org/wiki/Hidden_Markov_model) cuyos parámetros
+son las probabilidades de transición entre estados (las etiquetas) y de emisión
+de símbolos (las palabras), y también el algoritmo de
+[Viterbi](https://en.wikipedia.org/wiki/Viterbi_algorithm#Pseudocode) que calcula el
+etiquetado más probable de una oración.
+
+Para ello, se implementaron las clases ```HMM``` y ```ViterbiTagger``` respetando
+la interfaz propuesta por la cátedra.

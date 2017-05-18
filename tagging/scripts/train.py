@@ -22,6 +22,7 @@ import pickle
 from corpus.ancora import SimpleAncoraCorpusReader
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import LinearSVC
+from sklearn.linear_model import LogisticRegression
 
 from tagging.baseline import BaselineTagger
 from tagging.hmm import HMM, MLHMM
@@ -36,7 +37,8 @@ models = {
 
 clasifiers = {
     'multinomial': MultinomialNB,
-    'linear': LinearSVC
+    'linear': LinearSVC,
+    'LogisticRegression': LogisticRegression
 }
 
 if __name__ == '__main__':
@@ -48,7 +50,8 @@ if __name__ == '__main__':
     sents = list(corpus.tagged_sents())
 
     # train the model
-    n = int(opts['-n'])
+    if opts['-n'] is not None:
+        n = int(opts['-n'])
     m = opts['-m']
     c = opts['-c']
 
@@ -57,7 +60,8 @@ if __name__ == '__main__':
         model = models[m](n, sents)
     elif m == 'memm':
         clasifier = clasifiers[c]
-        print("Model", m, "Training with clasifier", c, "and n =", n,)
+        print("Model", m, "Training with clasifier", c, "and n =", n)
+        model = models[m](n, sents, clasifier)
     else:
         print("Model", m, "Training")
         model = models[m](sents)

@@ -76,3 +76,30 @@ Level    Words count    Total percent  WsMFreq
     8              0      0            []
     9              0      0            []
 ```
+
+
+
+## Ejercicio 2:  Baseline Tagger
+
+En este ejercicio tuve que programar un BaseLine Tagger que elija para cada palabra su
+etiqueta más frecuente observada en entrenamiento.
+Y que, para el caso de las palabras desconocidas, etiquete con  'nc0s000'.
+
+Para desarrollar este ejercicio implementé la clase ```BaselineTagger``` en el
+archivo **baseline.py**. Los métodos programados fueron los pedidos por la
+cátedra.
+
+Los métodos ```tag```, ```tag_word``` y ```unknown``` resultan triviales gracias
+a la forma en que se implementó el init.
+
+### **__init__**
+
+Este método toma oraciones etiquetadas para entrenarse.
+Establece una relación entre cada palabra y cada una de las etiquetas con la
+que aparece en el conjunto de entrenamiento y lo cuantifica. Además, en esta
+relación de cada palabra con los tags, mantiene un orden de los tags que más
+han aparecido etiquetando esa palabra.
+Se utilizan diccionarios y defaultdicts para precalcular esta información,
+a la hora de ordenar los tags más usados por palabra se usan tuplas de
+**(tag, C)** siendo C la cantidad de veces que se etiquetó la palabra en
+cuestión con el tag.

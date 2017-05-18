@@ -199,3 +199,30 @@ Desde el punto de vista del tiempo, también tiene un desempeño aceptable ya qu
 para **n=2** tiene un excelente accuracy total y de palabras conocidas y sólo tarda
 5:40 minutos. A medida que crece el **n** desmejora considerablemente el rendimiento
 en tiempo.
+
+
+
+## Ejercicio 6: Features para Etiquetado de Secuencias
+
+Para este ejercicio tuvimos que implementar algunos features básicos:
+
+- **word_lower:** la palabra actual en minúsculas.
+- **word_istitle::** la palabra actual empieza en mayúsculas.
+- **word_isupper::** la palabra actual está en mayúsculas.
+- **word_isdigit::** la palabra actual es un número.
+
+Para la implementación de este features se utilizaron las herramientas básicas
+de python para strings.
+
+
+Y, también, algunos features paramétricos:
+
+- **NPrevTags(f):** la tupla de los últimos n tags. Para implementar esta feature
+se definió una feature extra **prev_tags** que devuelve los tags previos dada una
+Historiy. Se usa la definición de la misma
+```(History = namedtuple('History', 'sent prev_tags i')```)
+
+- **PrevWord(f):** Dado un feature f, aplicarlo sobre la palabra anterior en
+lugar de la actual.
+
+Todos estos features se implementaron en el archivo ```feature.py```

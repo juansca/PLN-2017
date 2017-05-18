@@ -12,8 +12,10 @@ from docopt import docopt
 import pickle
 import sys
 from collections import Counter
+import numpy as np
 from time import time
-
+from sklearn.metrics import confusion_matrix
+import matplotlib.pyplot as plt
 from corpus.ancora import SimpleAncoraCorpusReader
 
 
@@ -23,6 +25,41 @@ def progress(msg, width=None):
         width = len(msg)
     print('\b' * width + msg, end='')
     sys.stdout.flush()
+
+
+def plot_confusion_matrix(cm, classes, filename="cnf_matrix.png",
+                          normalize=False,
+                          title='Confusion matrix',
+                          ylabel='True label', xlabel='Predicted label'):
+    """
+    This function plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+    np.set_printoptions(precision=2)
+
+    # Plot non-normalized confusion matrix
+    plt.figure(figsize=(15, 10), dpi=80)
+
+    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Oranges)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=90, fontsize=8)
+    plt.yticks(tick_marks, classes, fontsize=8)
+
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+
+    print(cm)
+
+    plt.tight_layout()
+    plt.ylabel(ylabel)
+    plt.xlabel(xlabel)
+
+    plt.savefig(filename)
 
 
 if __name__ == '__main__':
@@ -39,21 +76,26 @@ if __name__ == '__main__':
     files = '3LB-CAST/.*\.tbf\.xml'
     corpus = SimpleAncoraCorpusReader('ancora/', files)
     sents = list(corpus.tagged_sents())
+    n = len(sents)
 
     # tag
     hits, total = 0, 0
     hits_known, hits_unknown = 0, 0
     total_known, total_unknown = 0, 0
-
-    n = len(sents)
-
     are_known = []
+
+    # confusion matrix
+    test = []
+    prediction = []
 
     for i, sent in enumerate(sents):
         word_sent, gold_tag_sent = zip(*sent)
 
         model_tag_sent = model.tag(word_sent)
         assert len(model_tag_sent) == len(gold_tag_sent), i
+        # For confusion matrix
+        test += list(gold_tag_sent)
+        prediction += model_tag_sent
 
         # global score
         hits_sent = [m == g for m, g in zip(model_tag_sent, gold_tag_sent)]
@@ -101,3 +143,9 @@ if __name__ == '__main__':
     print('Known accuracy: {:2.2f}%'.format(known_acc * 100))
     print('Unknown accuracy: {:2.2f}%'.format(unknown_acc * 100))
     print('Time running: {:2.2f}seconds'.format(finish))
+
+    matrix = confusion_matrix(test, prediction)
+    classes = list(set(test) | set(prediction))
+    classes.sort()
+    plot_confusion_matrix(matrix, classes,
+                          filename.split('.')[0]+'.png')

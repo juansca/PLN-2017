@@ -53,8 +53,6 @@ def plot_confusion_matrix(cm, classes, filename="cnf_matrix.png",
     else:
         print('Confusion matrix, without normalization')
 
-    print(cm)
-
     plt.tight_layout()
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)

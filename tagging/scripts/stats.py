@@ -23,26 +23,26 @@ if __name__ == '__main__':
 
     # compute the statistics
     count_sents = len(sents)
-    count_words = defaultdict(int)
+    words_tags_counter = defaultdict(lambda: defaultdict(int))
+    tag_to_words = defaultdict(set)
+    words = defaultdict(int)
     count_tags = defaultdict(int)
-    tag_to_words = dict()
     # Pre-compute tags and words information to do the statistics
     for sent in sents:
         for tupl in sent:
             word = tupl[0]
             tag = tupl[1]
             # The same word appear
-            count_words[word] += 1
+            words[word] += 1
             # The same tag appear
             count_tags[tag] += 1
             # Relation between tag and word
-            if tag in tag_to_words.keys():
-                tag_to_words[tag].add(word)
-            else:
-                tag_to_words[tag] = {word}
+            tag_to_words[tag].add(word)
+            words_tags_counter[word][tag] += 1
 
-    words_vocab_len = len(count_words.keys())
-    tags_vocab_len = len(count_tags.keys())
+    count_words = sum(words.values())
+    words_vocab_len = len(words)
+    tags_vocab_len = len(count_tags)
 
     print("Cantidad de palabras:", words_vocab_len,
           "\nCantidad de etiquetas:", tags_vocab_len,
@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     ten_frequent_tags = tags_count_list[:10]
     # Print the table with the information about the tags
-    table = []
+    table = defaultdict(list)
     for i in range(10):
         tag_tuple = ten_frequent_tags[i]
         percent = (tag_tuple[1] / total_tags) * 100
@@ -64,11 +64,14 @@ if __name__ == '__main__':
 
         words_with_tag = tag_to_words[tag]
         words_with_tag = sorted(words_with_tag,
-                                key=lambda word: count_words[word],
+                                key=lambda word: words[word],
                                 reverse=True)
         five_words = words_with_tag[:5]
 
-        info_lst = [i, tag, tag_tuple[1], percent, five_words]
-        table.append(info_lst)
-    header = ["Order" , "Tag", "Frequency", "Percent", "Words most frequent"]
-    print(tabulate(header, table))
+        table['Order'].append(i)
+        table['Tag'].append(tag)
+        table['Freq'].append(tag_tuple[1])
+        table['Percent'].append(percent)
+        table['WsMFreq'].append(five_words)
+
+    print(tabulate(table, headers="keys"))

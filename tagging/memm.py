@@ -92,9 +92,9 @@ class MEMM:
         :param tagged_sent: the tagged sentence (a list of pairs (word, tag)).
         """
         # We use np array for efficiency
-        tags = np.array([word_tagged[1] for word_tagged in tagged_sent])
+        tags = [word_tagged[1] for word_tagged in tagged_sent]
 
-        return np.nditer(tags)
+        return iter(tags)
 
     def tag(self, sent):
         """Tag a sentence.

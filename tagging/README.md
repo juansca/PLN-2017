@@ -103,3 +103,46 @@ Se utilizan diccionarios y defaultdicts para precalcular esta información,
 a la hora de ordenar los tags más usados por palabra se usan tuplas de
 **(tag, C)** siendo C la cantidad de veces que se etiquetó la palabra en
 cuestión con el tag.
+
+
+
+## Ejercicio 3: Entrenamiento y Evaluación de Taggers
+
+En este ejercicio se programó tanto un script que permite entrenar un tagger
+baseline como evaluarlo.
+El script **train.py** es el encargado de entrenar dicho modelo.
+
+En el caso de la evaluación de el modelo, la realiza **eval.py**. Como parámetros
+de evaluación se piden:
+
+- **Accuracy**, esto es, el porcentaje de etiquetas correctas.
+- **Accuracy** sobre las palabras conocidas y sobre las palabras desconocidas.
+- **Matriz de confusión**, como se explica en la sección 5.7.1 (Error Analysis) de
+Jurafsky & Martin.
+
+
+Para la accuracy global simplemente se cuenta las palabras etiquetadas correctamente
+comparando con las etiquetas "reales" y después se divide por el total.
+
+En el caso de la accuracy para las palabras conocidas y desconocidas, se usa la
+herramienta ```collections.Counter```.
+Se recorre la lista que tiene la informacion de los "hits" y se observa si el
+"hit" o "no-hit" se corresponde con una palabra conocida o desconocida.
+Después se utiliza Counter para extraer la información procesada.
+
+Para la **matriz de confusión** llevamos "la cuenta" de las oraciones taggeadas
+por el modelo y de las "reales". Después se usa es información para generar la
+matriz usando la herramienta ```sklearn.metrics.confusion_matrix```.
+Se provee un método para graficar la matriz como un mapa de calor.
+
+
+### **Reporte de resultados para BaseLine**
+
+```
+Total        87.61%
+Known        95.29%
+Unknown      18.02%
+Time          2.22s
+```
+
+        PONER MATRIZ DE CONFUSIÓN

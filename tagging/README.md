@@ -145,7 +145,7 @@ Unknown      18.02%
 Time          2.22s
 ```
 
-[Convolution Base](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/base.png)
+![Convolution Base](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/base.png)
 
 
 
@@ -202,17 +202,17 @@ en tiempo.
 
 **N = 1**
 
-[Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm1.png)
+![Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm1.png)
 
 
 **N = 2**
 
-[Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm2.png)
+![Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm2.png)
 
 
 **N = 3**
 
-[Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm3.png)
+![Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm3.png)
 
 
 **N = 4**
@@ -323,19 +323,19 @@ clasificadores para MEMM) Esto teniendo en cuenta el desempe√±o en tiempo tambi√
 #### **Matrices utilizando LogisticRegression**
 
 **N = 1**
-[Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm1.png)
+![Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm1.png)
 
 
 **N = 2**
-[Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm2.png)
+![Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm2.png)
 
 
 **N = 3**
-[Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm3.png)
+![Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm3.png)
 
 
 **N = 4**
-[Convolution N=4](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm4.png)
+![Convolution N=4](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm4.png)
 
 
 
@@ -343,16 +343,16 @@ clasificadores para MEMM) Esto teniendo en cuenta el desempe√±o en tiempo tambi√
 
 
 **N = 1**
-[Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear1.png)
+![Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear1.png)
 
 
 **N = 2**
-[Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear2.png)
+![Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear2.png)
 
 
 **N = 3**
-[Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear3.png)
+![Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear3.png)
 
 
 **N = 4**
-[Convolution N=4](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear4.png)
+![Convolution N=4](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear4.png)

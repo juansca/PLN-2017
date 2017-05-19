@@ -145,7 +145,7 @@ Unknown      18.02%
 Time          2.22s
 ```
 
-        PONER MATRIZ DE CONFUSIÓN
+![Convolution Base](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/base.png)
 
 
 
@@ -200,7 +200,22 @@ para **n=2** tiene un excelente accuracy total y de palabras conocidas y sólo t
 5:40 minutos. A medida que crece el **n** desmejora considerablemente el rendimiento
 en tiempo.
 
+**N = 1**
 
+![Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm1.png)
+
+
+**N = 2**
+
+![Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm2.png)
+
+
+**N = 3**
+
+![Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/mlhmm3.png)
+
+
+**N = 4**
 
 ## Ejercicio 6: Features para Etiquetado de Secuencias
 
@@ -304,3 +319,40 @@ clasificadores para MEMM) Esto teniendo en cuenta el desempeño en tiempo tambi�
 
 
 ### **Matrices de Convolución**
+
+#### **Matrices utilizando LogisticRegression**
+
+**N = 1**
+![Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm1.png)
+
+
+**N = 2**
+![Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm2.png)
+
+
+**N = 3**
+![Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm3.png)
+
+
+**N = 4**
+![Convolution N=4](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memm4.png)
+
+
+
+#### **Matrices usando LinearSVC**
+
+
+**N = 1**
+![Convolution N=1](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear1.png)
+
+
+**N = 2**
+![Convolution N=2](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear2.png)
+
+
+**N = 3**
+![Convolution N=3](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear3.png)
+
+
+**N = 4**
+![Convolution N=4](https://github.com/juansca/PLN-2017/blob/tp2/Models/tagging/Matrices/memmLinear4.png)

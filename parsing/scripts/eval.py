@@ -47,7 +47,8 @@ if __name__ == '__main__':
     parsed_sents = list(corpus.parsed_sents())
     if m is not None:
         m = int(m)
-        parsed_sents = [sent for sent in parsed_sents if len(sent) <= m]
+        parsed_sents = [sent for sent in parsed_sents
+                        if len(sent.leaves()) <= m]
     if n is not None:
         n = int(n)
         parsed_sents = parsed_sents[:n]

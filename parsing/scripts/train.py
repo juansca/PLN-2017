@@ -32,13 +32,14 @@ if __name__ == '__main__':
 
     print('Loading corpus...')
     files = 'CESS-CAST-(A|AA|P)/.*\.tbf\.xml'
-    corpus = SimpleAncoraCorpusReader('ancora/ancora-2.0/', files)
+    corpus = SimpleAncoraCorpusReader('corpus/ancora/', files)
 
     print('Training model...')
     model = models[opts['-m']](corpus.parsed_sents())
 
     print('Saving...')
     filename = opts['-o']
+    filename = 'Models/parsing/' + filename
     f = open(filename, 'wb')
     pickle.dump(model, f)
     f.close()

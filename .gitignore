@@ -1,0 +1,17 @@
+/pln_2015.egg-info
+*__pycache__
+/corpus/test.txt
+/languagemodeling/*.pdf
+/languagemodeling/to_test.py
+/languagemodeling/tests/__pycache__
+/tweets
+/languagemodeling/scripts/output.txt
+corpus/__pycache__/
+corpus/harryTest.txt
+corpus/harryTrain.txt
+languagemodeling/Models/
+*ancora
+*TODOs.md
+/Models/tagging/m*
+/Models/tagging/base
+*.pdf

@@ -80,4 +80,30 @@ class CKYParser:
 
         :param sent: the sequence of terminals.
         """
-        pass
+        len_sent = len(sent)
+        score, back = self._init_CKY_triangle(sent)
+        self._pi, self._bp = score, back
+
+        for span in range(1, len_sent):
+            for begin in range(1, len_sent - span + 1):
+                end = begin + span
+                for split in range(begin, end):
+                    left, right = (begin, split), (split + 1, end)
+
+                    binary_prods = self._binary_productions(score[left],
+                                                            score[right])
+
+                    for A, B, C, rule_prob in binary_prods:
+                        # Sum probability because is logprob
+                        prob = score[left][B] + score[right][C]
+                        if A not in score[(begin, end)] \
+                           or score[(begin, end)][A] < prob + rule_prob:
+                            score[(begin, end)][A] = prob + rule_prob
+                            right_back = back[right][C]
+                            left_back = back[left][B]
+                            back[(begin, end)][A] = Tree(A, [left_back,
+                                                             right_back])
+        start = str(self.grammar.start())
+        if (1, len_sent) in score and start in score[(1, len_sent)]:
+            return (score[(1, len_sent)][start], back[(1, len_sent)][start])
+        return (float('-inf'), None)

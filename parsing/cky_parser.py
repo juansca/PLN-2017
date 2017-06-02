@@ -8,7 +8,13 @@ class CKYParser:
         """
         :param grammar: a binarised NLTK PCFG.
         """
-        pass
+        self.grammar = grammar
+        self.from_right_hand = defaultdict(list)
+        productions = grammar.productions()
+
+        for p in productions:
+            left_hand, right_hand, prob = self._to_triple(p)
+            self.from_right_hand[right_hand].append((left_hand, prob))
 
     def _to_triple(self, prod):
         """Convert the production prod to a triple.

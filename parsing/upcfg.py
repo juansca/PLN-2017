@@ -37,4 +37,11 @@ class UPCFG:
 
         :param tagged_sent: the tagged sentence (a list of pairs (word, tag)).
         """
-        pass
+        words, tags = zip(*tagged_sent)
+        _, tree = self.parser.parse(tags)
+        if tree is None:
+            return Flat([], self.start).parse(tagged_sent)
+
+        tree.un_chomsky_normal_form()
+
+        return lexicalize(tree, words)

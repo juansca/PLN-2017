@@ -1,14 +1,16 @@
 """Train a parser.
 
 Usage:
-  train.py [-m <model>] -o <file>
+  train.py [-m <model> [-n <order>]] -o <file>
   train.py -h | --help
 
 Options:
+  -n <order>    Order of the model trained (Only for upcfg model)
   -m <model>    Model to use [default: flat]:
                   flat: Flat trees
                   rbranch: Right branching trees
                   lbranch: Left branching trees
+                  upcfg: Unlexicalized PCFG model
   -o <file>     Output model file.
   -h --help     Show this screen.
 """
@@ -18,12 +20,13 @@ import pickle
 from corpus.ancora import SimpleAncoraCorpusReader
 
 from parsing.baselines import Flat, RBranch, LBranch
-
+from parsing.upcfg import UPCFG
 
 models = {
     'flat': Flat,
     'rbranch': RBranch,
     'lbranch': LBranch,
+    'upcfg': UPCFG,
 }
 
 

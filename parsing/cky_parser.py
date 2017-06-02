@@ -52,6 +52,28 @@ class CKYParser:
                                 from_right_hand[right_hand]]
         return productions
 
+    def _init_CKY_triangle(self, sent):
+        """Initilize CKY triangle
+
+        :param sent: the sequence of terminals
+        """
+        len_sent = len(sent)
+        score = {}
+        back = {}
+        from_right_hand = self.from_right_hand
+
+        for i in range(1, len_sent + 1):
+            for j in range(i, len_sent + 1):
+                score[(i, j)] = dict()
+                back[(i, j)] = dict()
+
+        # Creating the base of the CKY triangle
+        for i, word in enumerate(sent):
+            for A, prob in from_right_hand[(word,)]:
+                j = i + 1
+                score[(j, j)][A] = prob
+                back[(j, j)][A] = Tree(A, [word])
+        return score, back
 
     def parse(self, sent):
         """Parse a sequence of terminals.

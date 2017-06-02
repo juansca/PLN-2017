@@ -29,7 +29,8 @@ class UPCFG:
     def productions(self):
         """Returns the list of UPCFG probabilistic productions.
         """
-        pass
+        productions = self.pcfg.productions()
+        return productions
 
     def parse(self, tagged_sent):
         """Parse a tagged sentence.

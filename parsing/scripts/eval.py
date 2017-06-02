@@ -11,11 +11,11 @@ Options:
   -h --help     Show this screen.
 """
 
+from corpus.ancora import SimpleAncoraCorpusReader
 from docopt import docopt
 import pickle
 import sys
-
-from corpus.ancora import SimpleAncoraCorpusReader
+from time import time
 
 from parsing.util import spans
 
@@ -38,6 +38,8 @@ if __name__ == '__main__':
     f = open(filename, 'rb')
     model = pickle.load(f)
     f.close()
+
+    start = time()
 
     print('Loading corpus...')
     m = opts['-m']
@@ -101,6 +103,7 @@ if __name__ == '__main__':
         progress(format_str.format(float(i+1) * 100 / n, i+1, n,
                                    prec, rec, f1))
 
+    finish = time() - start
     print('')
     print('Parsed {} sentences'.format(n))
     print('Labeled')
@@ -112,3 +115,5 @@ if __name__ == '__main__':
     print('  Precision: {:2.2f}% '.format(prec_unlab))
     print('  Recall: {:2.2f}% '.format(rec_unlab))
     print('  F1: {:2.2f}% '.format(f1_unlab))
+
+    print('Time running: {:2.2f}seconds'.format(finish))

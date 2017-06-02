@@ -32,11 +32,24 @@ class CKYParser:
 
         :return: 4-uple (A, B, C, prob)
         """
-        pass
+        from_right_hand = self.from_right_hand
+
+        productions = []
+
+        b_c_right_hands = [right_hand for right_hand in from_right_hand
+                           if len(right_hand) == 2]
+
+        for right_hand in b_c_right_hands:
+            B, C = right_hand
+            if B in Bs and C in Cs:
+                productions += [(A, B, C, prob) for A, prob in
+                                from_right_hand[right_hand]]
+        return productions
+
 
     def parse(self, sent):
         """Parse a sequence of terminals.
 
         :param sent: the sequence of terminals.
         """
-        pass 
+        pass

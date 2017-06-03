@@ -9,12 +9,18 @@ class CKYParser:
         :param grammar: a binarised NLTK PCFG.
         """
         self.grammar = grammar
-        self.from_right_hand = defaultdict(list)
         productions = grammar.productions()
 
+        from_right_hand = defaultdict(list)
+        self.from_right_hand = from_right_hand
+
+        self.b_c_right_hands = []
         for p in productions:
             left_hand, right_hand, prob = self._to_triple(p)
-            self.from_right_hand[right_hand].append((left_hand, prob))
+            from_right_hand[right_hand].append((left_hand, prob))
+
+        self.b_c_right_hands = [right_hand for right_hand in from_right_hand
+                                if len(right_hand) == 2]
 
     def _to_triple(self, prod):
         """Convert the production prod to a triple.
@@ -42,8 +48,7 @@ class CKYParser:
 
         productions = []
 
-        b_c_right_hands = [right_hand for right_hand in from_right_hand
-                           if len(right_hand) == 2]
+        b_c_right_hands = self.b_c_right_hands
 
         for right_hand in b_c_right_hands:
             B, C = right_hand

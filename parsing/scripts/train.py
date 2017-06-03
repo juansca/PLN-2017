@@ -5,7 +5,7 @@ Usage:
   train.py -h | --help
 
 Options:
-  -n <order>    Order of the model trained (Only for upcfg model)
+  -n <order>   Use Horizontal Markovization (Only for upcfg model)
   -m <model>    Model to use [default: flat]:
                   flat: Flat trees
                   rbranch: Right branching trees
@@ -38,7 +38,15 @@ if __name__ == '__main__':
     corpus = SimpleAncoraCorpusReader('corpus/ancora/', files)
 
     print('Training model...')
-    model = models[opts['-m']](corpus.parsed_sents())
+    model = models[opts['-m']]
+    if opts['-m'] == 'upcfg':
+        horizMarkov = opts['-n']
+        if horizMarkov is not None:
+            horizMarkov = int(horizMarkov)
+        print(opts['-m'], "with Horizontal Markov order = ", horizMarkov)
+        model = model(corpus.parsed_sents(), horzMarkov=horizMarkov)
+    else:
+        model = model(corpus.parsed_sents())
 
     print('Saving...')
     filename = opts['-o']

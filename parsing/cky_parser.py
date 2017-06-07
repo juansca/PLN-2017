@@ -1,5 +1,6 @@
 from collections import defaultdict
 from nltk.tree import Tree
+from itertools import product
 
 
 class CKYParser:
@@ -18,9 +19,6 @@ class CKYParser:
         for p in productions:
             left_hand, right_hand, prob = self._to_triple(p)
             from_right_hand[right_hand].append((left_hand, prob))
-
-        self.b_c_right_hands = [right_hand for right_hand in from_right_hand
-                                if len(right_hand) == 2]
 
     def _to_triple(self, prod):
         """Convert the production prod to a triple.
@@ -42,19 +40,16 @@ class CKYParser:
         :param Bs: list of nonterminals or terminals
         :param Cs: list of nonterminals or terminals
 
-        :return: 4-uple (A, B, C, prob)
+        :return: list 4-uple (A, B, C, prob)
         """
         from_right_hand = self.from_right_hand
 
         productions = []
 
-        b_c_right_hands = self.b_c_right_hands
-
-        for right_hand in b_c_right_hands:
-            B, C = right_hand
-            if B in Bs and C in Cs:
+        for B, C in product(Bs, Cs):
+            if (B, C) in from_right_hand:
                 productions += [(A, B, C, prob) for A, prob in
-                                from_right_hand[right_hand]]
+                                from_right_hand[(B, C)]]
         return productions
 
     def _init_CKY_triangle(self, sent):

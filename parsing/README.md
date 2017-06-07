@@ -81,3 +81,47 @@ Se decidió hacerlo como un método aparte simplemente por legibilidad del códi
 
 Finalmente se pidió agregar un test con una gramática y una oración tal que la oración tenga más de un análisis posible (sintácticamente ambigua).
 [Explicar test]
+
+
+## Ejercicio 3: PCFGs No Lexicalizadas
+
+En este ejercicio se pidió implementar una UPCFG, una PCFG cuyas reglas y probabilidades se
+obtienen a partir de un corpus de entrenamiento.
+Y, también, deslexicalizar completamente la PCFG: en las reglas, reemplazar todas las entradas
+léxicas por su POS tag. Luego, el parser también debe ignorar las entradas léxicas y usar la
+oración de POS tags para parsear.
+
+Se implementó la clase **UPCFG** en el archivo `upcfg.py`.
+La implementación de esta clase resulta sencilla luego del estudio de algunos métodos
+y clases de nltk y los métodos dados por la cátedra en el archivo `util.py`.
+
+Algunos de los métodos y clases usados son:
+
+ - **nltk.grammar.Nonterminal**: Un simbolo No-terminal para una gramática libre de contexto.
+ - **nltk.grammar.induce_pcfg**: Induce una gramática PCFG a partir de una lista de
+    producciones.
+ - **nltk.Tree.chomsky_normal_form**: este método puede modificar de 3 maneras un Tree.
+        1) Convierte el árbol a su CNF
+        2) Con Markov vertical
+        3) Con Markov horizontal
+ - **nltk.Tree.collapse_unary**: colapsa los subtrees con un sólo hijo.
+ - **util.lexicalize**
+ - **util.unlexicalize**
+
+### **Reportes**
+
+Adicionalmente se pidió entrenar y evaluar la UPCFG para todas las oraciones de largo menor o igual a 20. Aquí los resultados:
+
+
+```
+Parsed 1444 sentences
+Labeled
+  Precision: 72.51%
+  Recall: 72.45%
+  F1: 72.48%
+Unlabeled
+  Precision: 74.68%
+  Recall: 74.62%
+  F1: 74.65%
+Time running: 3:25m
+```

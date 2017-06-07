@@ -101,9 +101,9 @@ Algunos de los métodos y clases usados son:
  - **nltk.grammar.induce_pcfg**: Induce una gramática PCFG a partir de una lista de
     producciones.
  - **nltk.Tree.chomsky_normal_form**: este método puede modificar de 3 maneras un Tree.
-        1) Convierte el árbol a su CNF
-        2) Con Markov vertical
-        3) Con Markov horizontal
+    - Convierte el árbol a su CNF
+    - Con Markov vertical
+    - Con Markov horizontal
  - **nltk.Tree.collapse_unary**: colapsa los subtrees con un sólo hijo.
  - **util.lexicalize**
  - **util.unlexicalize**
@@ -124,4 +124,31 @@ Unlabeled
   Recall: 74.62%
   F1: 74.65%
 Time running: 3:25m
+```
+
+
+## Ejercicio 4: Markovización Horizontal
+
+Para este ejercicio simplemente se tuvo que agregar el parámetro del `chomsky_normal_form`
+para que utilice la Markovización Horizontal.
+
+Y se agregó al script 'train.py' la opción para su utilización.
+
+### Reportes
+
+Adicionalmente, se pidió entrenar y evaluar para varios valores de n (0, 1, 2 y 3), para las
+oraciones de largo menor o igual a 20. Aquí los resultados:
+
+```
+Parsed 1444 sent
+                        N0          N1        N2         N3
+Labeled
+  Precision:          69.70%      74.16%     74.59%    73.68%
+  Recall:             69.77%      74.16%     74.18%    73.10%
+  F1:                 69.73%      74.16%     74.38%    73.39%
+Unlabeled
+  Precision:          71.60%      76.20%     76.59%    75.84%
+  Recall:             71.67%      76.20%     76.17%    75.24%
+  F1:                 71.63%      76.20%     76.38%    75.54%
+Time running:         1:57m       1:14m      1:48m     2:1m
 ```

@@ -80,9 +80,16 @@ Se decidió hacerlo como un método aparte simplemente por legibilidad del códi
 
 
 Finalmente se pidió agregar un test con una gramática y una oración tal que la oración tenga más de un análisis posible (sintácticamente ambigua).
-[Explicar test]
 
+La oración que utilizamos en este caso es:
+ - "The tourist saw the astronomer with the telescope"
 
+Esta oración puede interpretarse como:
+- The tourist used the telescope to see the astronomer.
+o
+- The astronomer that the tourist saw had a telescope.
+
+ 
 ## Ejercicio 3: PCFGs No Lexicalizadas
 
 En este ejercicio se pidió implementar una UPCFG, una PCFG cuyas reglas y probabilidades se

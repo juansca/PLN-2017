@@ -85,9 +85,19 @@ La oración que utilizamos en este caso es:
  - "The tourist saw the astronomer with the telescope"
 
 Esta oración puede interpretarse como:
-- The tourist used the telescope to see the astronomer.
+1) The tourist used the telescope to see the astronomer.
 o
-- The astronomer that the tourist saw had a telescope.
+2) The astronomer that the tourist saw had a telescope.
+
+Los árboles sintácticos para estas dos oraciones son:
+
+**1**
+
+![First Tree](https://github.com/juansca/PLN-2017/blob/tp3/parsing/tests/cky_trees/%C3%81rbol1.png)
+
+**2**
+
+![Sencond Tree](https://github.com/juansca/PLN-2017/blob/tp3/parsing/tests/cky_trees/%C3%81rbol2.png)
 
  
 ## Ejercicio 3: PCFGs No Lexicalizadas

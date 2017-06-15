@@ -6,13 +6,10 @@
 /languagemodeling/tests/__pycache__
 /tweets
 /languagemodeling/scripts/output.txt
-corpus/__pycache__/
-corpus/harryTest.txt
-corpus/harryTrain.txt
-languagemodeling/Models/
 *ancora
 *TODOs.md
 /Models/tagging/m*
 /Models/tagging/base
 /Models/parsing
 *.pdf
+/tweets

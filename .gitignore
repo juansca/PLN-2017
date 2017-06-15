@@ -10,5 +10,6 @@
 *TODOs.md
 /Models/tagging/m*
 /Models/tagging/base
+/Models/parsing
 *.pdf
 /tweets
